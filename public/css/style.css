@@ -1,0 +1,65 @@
+:root { 
+  --dark-night: #1e1e2f;
+  --coffee-brown: #5c4033;
+  --milk-white: #efe6dd;
+  --accent-gold: #d6b370;
+  --navy-grey: #2c2c3a;
+  --warm-light: #ffb27d;
+}
+
+body {
+  background-color: var(--dark-night);
+  color: var(--milk-white);
+}
+
+.navbar {
+  background-color: var(--navy-grey);
+}
+
+.btn-primary {
+  background-color: var(--coffee-brown);
+  border: none;
+}
+.btn-primary:hover {
+  background-color: var(--accent-gold);
+}
+
+
+/* navbar css start*/
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.navbar-brand span {
+  color: var(--accent-gold);
+}
+.nav-link {
+  color: var(--milk-white) !important;
+}
+.nav-link:hover {
+  color: var(--warm-light) !important;
+}
+
+.navbar {
+  background-color: var(--navy-grey) !important;
+  min-height: 80px;
+}
+
+.navbar-nav .nav-link {
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+}
+
+.navbar-nav .dropdown-toggle::after {
+  margin-left: 0.25rem;
+  vertical-align: middle;
+}
+
+.navbar-nav .dropdown-menu {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+
+/* navbar css end*/
