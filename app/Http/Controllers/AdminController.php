@@ -61,7 +61,7 @@ class AdminController extends Controller
             return redirect()->route('admin.loginForm');
         }
 
-        return view('admin.backend');
+        return view('admin.index');
     }
 
     /**
