@@ -1,0 +1,194 @@
+body {
+  font-size: 0.875rem;
+  background-color: #2a2a3e; /* 柔和深藍灰，減少眼睛疲勞 */
+  color: #e8ecef; /* 柔和白色，與背景對比度高 */
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+.feather {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Behind the navbar */
+  padding: 48px 0 0; /* Height of navbar */
+  background-color: #34344e !important; /* 柔和深藍，與背景協調 */
+  color: #e8ecef;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.15); /* 柔和陰影 */
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    top: 5rem;
+  }
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents */
+}
+
+.sidebar .nav-link {
+  font-weight: 500;
+  color: #e8ecef; /* 柔和白色，易於閱讀 */
+  transition: color 0.2s ease; /* 平滑過渡 */
+}
+
+.sidebar .nav-link .feather {
+  margin-right: 4px;
+  color: #a8b1c0; /* 柔和灰色圖標 */
+}
+
+.sidebar .nav-link.active {
+  background-color: transparent;
+  color: #d4a373; /* 品牌金色，稍柔和 */
+  font-weight: bold;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+  color: #f4c095; /* 溫暖淡橙色，hover/active 效果 */
+}
+
+.sidebar .nav-link:hover {
+  color: #f4c095; /* 溫暖淡橙色，hover 效果 */
+}
+
+.sidebar-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #d4a373; /* 品牌金色，柔和 */
+  font-weight: bold;
+}
+
+/*
+ * Navbar
+ */
+
+.navbar {
+  background-color: #2a2a3e !important; /* 與 body 一致的深藍灰 */
+}
+
+.navbar-brand {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: 1rem;
+  background-color: transparent;
+  color: #d4a373 !important; /* 品牌金色 */
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: color 0.2s ease;
+}
+
+.navbar-brand:hover {
+  color: #f4c095 !important; /* 淡橙色 hover 效果 */
+}
+
+.navbar .navbar-toggler {
+  top: 0.25rem;
+  right: 1rem;
+  color: #e8ecef;
+}
+
+.navbar .form-control {
+  padding: 0.75rem 1rem;
+  border-width: 0;
+  border-radius: 0;
+  background-color: rgba(255, 255, 255, 0.15); /* 稍亮的輸入框背景 */
+  color: #e8ecef;
+}
+
+.form-control-dark {
+  color: #e8ecef;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.form-control-dark:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.3); /* 金色陰影，柔和 */
+}
+
+/* ========== 晝夜咖啡廳主題配色調整 ========== */
+h1.h2,
+h2,
+h3,
+h4,
+h5 {
+  color: #d4a373; /* 品牌金色 */
+}
+
+.btn-outline-secondary {
+  border-color: #d4a373;
+  color: #d4a373;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #d4a373;
+  color: #2a2a3e; /* 深藍灰文字，與按鈕背景對比 */
+}
+
+a {
+  color: #d4a373; /* 品牌金色 */
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #f4c095; /* 淡橙色 hover 效果 */
+}
+
+/* 表格和按鈕調整 */
+.table-dark {
+  background-color: #34344e; /* 與側邊欄一致 */
+}
+
+.btn-dark {
+  background-color: #34344e;
+  border-color: #34344e;
+  color: #e8ecef;
+}
+
+.btn-dark:hover {
+  background-color: #f4c095; /* 淡橙色 hover */
+  border-color: #f4c095;
+  color: #2a2a3e;
+}
+
+.btn-primary {
+  background-color: #d4a373;
+  border-color: #d4a373;
+  color: #2a2a3e;
+}
+
+.btn-primary:hover {
+  background-color: #f4c095;
+  border-color: #f4c095;
+  color: #2a2a3e;
+}
+
+.btn-secondary {
+  background-color: #5c5c7b; /* 柔和灰藍 */
+  border-color: #5c5c7b;
+  color: #e8ecef;
+}
+
+.btn-secondary:hover {
+  background-color: #f4c095;
+  border-color: #f4c095;
+  color: #2a2a3e;
+}

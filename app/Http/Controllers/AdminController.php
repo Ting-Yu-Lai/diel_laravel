@@ -32,6 +32,7 @@ class AdminController extends Controller
         if ($admin && Hash::check($request->password, $admin->password_hash)) {
             Session::put('admin_id', $admin->admin_id);
             Session::put('username', $admin->username);
+            Session::put('full_name', $admin->full_name);
             Session::put('power', $admin->power);
 
             $admin->last_login_at = now();
