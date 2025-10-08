@@ -1,65 +1,107 @@
-:root { 
-  --dark-night: #1e1e2f;
-  --coffee-brown: #5c4033;
-  --milk-white: #efe6dd;
-  --accent-gold: #d6b370;
-  --navy-grey: #2c2c3a;
-  --warm-light: #ffb27d;
+:root {
+    --dark-night: #1e1e2f;
+    --coffee-brown: #5c4033;
+    --milk-white: #efe6dd;
+    --accent-gold: #d6b370;
+    --navy-grey: #2c2c3a;
+    --warm-light: #ffb27d;
 }
 
 body {
-  background-color: var(--dark-night);
-  color: var(--milk-white);
+    background-color: var(--dark-night);
+    color: var(--milk-white);
 }
 
 .navbar {
-  background-color: var(--navy-grey);
+    background-color: var(--navy-grey);
 }
 
 .btn-primary {
-  background-color: var(--coffee-brown);
-  border: none;
+    background-color: var(--coffee-brown);
+    border: none;
 }
 .btn-primary:hover {
-  background-color: var(--accent-gold);
+    background-color: var(--accent-gold);
 }
-
 
 /* navbar css start*/
 .logo-img {
-  height: 40px;
-  width: auto;
+    height: 40px;
+    width: auto;
 }
 
 .navbar-brand span {
-  color: var(--accent-gold);
+    color: var(--accent-gold);
 }
 .nav-link {
-  color: var(--milk-white) !important;
+    color: var(--milk-white) !important;
 }
 .nav-link:hover {
-  color: var(--warm-light) !important;
+    color: var(--warm-light) !important;
 }
 
 .navbar {
-  background-color: var(--navy-grey) !important;
-  min-height: 80px;
+    background-color: var(--navy-grey) !important;
+    min-height: 80px;
 }
 
 .navbar-nav .nav-link {
-  padding: 0.5rem 1rem;
-  white-space: nowrap;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
 }
 
 .navbar-nav .dropdown-toggle::after {
-  margin-left: 0.25rem;
-  vertical-align: middle;
+    margin-left: 0.25rem;
+    vertical-align: middle;
 }
 
 .navbar-nav .dropdown-menu {
-  min-width: 150px;
-  max-width: 200px;
+    min-width: 150px;
+    max-width: 200px;
 }
 
-
 /* navbar css end*/
+
+/* admin login start */
+
+.login-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.login-form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+}
+
+.login-form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.login-form-control:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.btn-login {
+    background-color: #caa45f;
+    border: none;
+}
+
+.btn-login:hover {
+    background-color: #b68e47;
+}
+
+.error-message {
+    color: #ff4d4d;
+    text-align: center;
+    margin-bottom: 15px;
+}
+/* admin login end */

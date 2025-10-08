@@ -1,7 +1,7 @@
 <header class="navbar navbar-expand-md navbar-light bg-light sticky-top shadow-sm">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="{{ asset('images/logo/logo.webp') }}" alt="logo" class="logo-img">
+            <img src="{{ asset('images/icons/logo.webp') }}" alt="logo" class="logo-img">
             <span class="ms-2 h5 mb-0">晝夜</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
