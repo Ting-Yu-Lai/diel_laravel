@@ -13,6 +13,8 @@ class CarouselController extends Controller
     public function index()
     {
         //
+        $carousels = Carousel::orderBy('order_num')->get();
+        return view('admin.carousel.index', compact('carousels'));
     }
 
     /**
