@@ -2,12 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\DessertController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CarouselController;
 use App\Http\Middleware\AdminAuth;
+
 
 // ---------- 前台 ----------
 
@@ -29,22 +27,23 @@ Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.log
 
 // 後台頁面包在 middleware 裡
 Route::middleware([AdminAuth::class])->prefix('admin')->group(function () {
-    
+
     // 後台首頁
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
-    
-    // 菜單管理
-    Route::get('/menus', [MenuController::class, 'index'])->name('admin.menus');
-    
-    // 今日甜點管理
-    Route::get('/desserts', [DessertController::class, 'index'])->name('admin.desserts');
 
-    // 輪播圖管理
-    Route::get('/carousel', [CarouselController::class, 'index'])->name('admin.carousel');
-
-    // 活動剪影管理
-    Route::get('/events', [EventController::class, 'index'])->name('admin.events');
-
-    // 帳號管理 (僅店長可進入)
-    Route::get('/admins', [AdminController::class, 'adminList'])->name('admin.admins');
+    // 輪播圖 CRUD
+    Route::resource('carousel', CarouselController::class, [
+        'names' => [
+            'index'   => 'admin.carousel',
+            'create'  => 'admin.carousel.create',
+            'store'   => 'admin.carousel.store',
+            'edit'    => 'admin.carousel.edit',
+            'update'  => 'admin.carousel.update',
+            'destroy' => 'admin.carousel.destroy',
+            'show'    => 'admin.carousel.show', // 可選，如果你要用 show
+        ]
+    ]);
 });
+
+
+

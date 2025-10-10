@@ -13,7 +13,7 @@
             <div class="card-body">
                 <i class="fa-solid fa-image fa-2x"></i>
                 <h5 class="card-title mt-2">輪播圖管理</h5>
-                <a href="{{ route('carousel.index') }}" class="btn btn-primary btn-sm">管理</a>
+                {{-- <a href="{{ route('admin.carousel') }}" class="btn btn-primary btn-sm">管理</a> --}}
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
             <div class="card-body">
                 <i class="fa-solid fa-cake-candles fa-2x"></i>
                 <h5 class="card-title mt-2">今日甜點管理</h5>
-                <a href="{{ route('dessert.index') }}" class="btn btn-primary btn-sm">管理</a>
+                {{-- <a href="{{ route('admin.dessert') }}" class="btn btn-primary btn-sm">管理</a> --}}
             </div>
         </div>
     </div>
