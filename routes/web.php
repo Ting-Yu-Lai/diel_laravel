@@ -35,11 +35,14 @@ Route::middleware([AdminAuth::class])->prefix('admin')->group(function () {
     // 輪播圖排序上下移
     Route::get('carousel/{id}/swap/{direction}', [CarouselController::class, 'swapOrder'])
         ->name('admin.carousel.swap');
-        
+    // 切換顯示狀態
+    Route::post('carousel/{id}/toggle', [CarouselController::class, 'toggleActive'])
+        ->name('admin.carousel.toggle');
+
     // 輪播圖 CRUD
     Route::resource('carousel', CarouselController::class, [
         'names' => [
-            'index'   => 'admin.carousel',
+            'index'   => 'admin.carousel.index',
             'create'  => 'admin.carousel.create',
             'store'   => 'admin.carousel.store',
             'edit'    => 'admin.carousel.edit',
@@ -49,6 +52,3 @@ Route::middleware([AdminAuth::class])->prefix('admin')->group(function () {
         ]
     ]);
 });
-
-
-

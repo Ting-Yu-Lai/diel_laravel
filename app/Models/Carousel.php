@@ -10,8 +10,8 @@ class Carousel extends Model
     use HasFactory;
     //
     protected $fillable = [
-        'image_url',
         'title',
+        'image_url',
         'link',
         'order_num',
         'is_active',

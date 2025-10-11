@@ -9,7 +9,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin/carousel*') ? 'active' : '' }}"
-                    href="{{ route('admin.carousel') }}">
+                    href="{{ route('admin.carousel.index') }}">
                     <i class="fa-solid fa-image"></i> 輪播圖管理
                 </a>
             </li>
