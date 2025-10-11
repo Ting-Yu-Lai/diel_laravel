@@ -31,6 +31,11 @@ Route::middleware([AdminAuth::class])->prefix('admin')->group(function () {
     // 後台首頁
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 
+
+    // 輪播圖排序上下移
+    Route::get('carousel/{id}/swap/{direction}', [CarouselController::class, 'swapOrder'])
+        ->name('admin.carousel.swap');
+        
     // 輪播圖 CRUD
     Route::resource('carousel', CarouselController::class, [
         'names' => [

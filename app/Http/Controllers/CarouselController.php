@@ -18,6 +18,44 @@ class CarouselController extends Controller
     }
 
     /**
+     * Swap order_num.
+     * id: 傳入現有id
+     * direction: 移動的位置(往上、往下)
+     */
+    public function swapOrder($id, $direction)
+    {
+        $carousel = Carousel::findOrfail($id);
+        // === 的優點嚴格比較: === 運算符會同時比較值的型別和值本身，如果兩者型別不同，它會直接回傳 false。 
+        if($direction === 'up') {
+            //從 carousels 資料表裡，找出 order_num 比目前這筆更小的所有資料。
+            $target = Carousel::where('order_num', '<', $carousel->order_num)
+            // 將結果按照 order_num 由大排到小。
+                ->orderBy('order_num','desc')
+            // 只取出結果的「第一筆」。
+                ->first();
+        } else {
+            //從 carousels 資料表裡，找出 order_num 比目前這筆更小的所有資料。
+            $target = Carousel::where('order_num', '<', $carousel->order_num)
+                ->orderBy('order_num','asc')
+                ->first();
+        }
+
+        if(!$target) {
+            return redirect()->back()->with('message', '已經到最' . ($direction === 'up' ? '上':'下'));
+        }
+
+        $temp = $carousel->order_num;
+        $carousel->order_num = $target->order_num;
+        $target->oder_num = $temp;
+        
+        $carousel->save();
+        $target->save();
+
+        return redirect()->back()->with('message', '排序已更新!');
+    }
+
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
