@@ -22,7 +22,7 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" onclick="undeveloped()"; href="#">商城</a></li>
                 <li class="nav-item"><a class="nav-link" onclick="undeveloped()"; href="#">線上預約</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="undeveloped()"; href="#">會員登入</a></li>
+                <li class="nav-item"><a class="nav-link"  href="{{ route("member.login") }}">會員登入</a></li>
                 <li class="nav-item"><a class="nav-link" onclick="undeveloped()"; href="#">購物車</a></li>
             </ul>
         </div>

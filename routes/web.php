@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CarouselController;
+use App\Http\Controllers\MemberController;
 use App\Http\Middleware\AdminAuth;
 
 
@@ -14,6 +15,16 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 
 // 其他前台頁面可以在這裡加
 // Route::get('/about', [FrontController::class, 'about'])->name('front.about');
+
+// 會員登入
+Route::get('/member/login', [MemberController::class, 'loginForm'])->name('member.loginForm');
+Route::post('/member/login', [MemberController::class, 'login'])->name('member.login');
+
+Route::middleware('auth:member')->group(function () {
+    Route::get('/member/dashboard', function () {
+        return view('members.dashboard');
+    })->name('member.dashboard');
+});
 
 
 // ---------- 後台 ----------
