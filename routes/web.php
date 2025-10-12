@@ -19,11 +19,11 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 // 會員登入
 Route::get('/member/login', [MemberController::class, 'loginForm'])->name('member.loginForm');
 Route::post('/member/login', [MemberController::class, 'login'])->name('member.login');
+Route::post('/member/logout', [MemberController::class, 'logout'])->name('member.logout');
 
 Route::middleware('auth:member')->group(function () {
-    Route::get('/member/dashboard', function () {
-        return view('members.dashboard');
-    })->name('member.dashboard');
+    Route::get('/member/dashboard', [MemberController::class, 'dashboard'])->name('member.dashboard');
+    Route::post('/member/logout', [MemberController::class, 'logout'])->name('member.logout');
 });
 
 

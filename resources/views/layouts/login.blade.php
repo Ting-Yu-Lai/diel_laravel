@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,8 +23,12 @@
 </head>
 
 <body>
+    <div class="position-absolute top-0 start-0 p-3">
+        <a href="{{ route('front.index') }}" class="btn btn-light btn-sm">回首頁</a>
+    </div>
     @yield('content')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

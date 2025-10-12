@@ -15,7 +15,7 @@
     <form action="{{ route('member.login') }}" method="post">
         @csrf
         <div class="mb-3">
-            <label for="login" class="form-label">帳號或 Email</label>
+            <label for="login" class="form-label">帳號 或 Email</label>
             <input type="text" name="login" class="form-control" required>
         </div>
         <div class="mb-3">
@@ -23,7 +23,7 @@
             <input type="password" name="password" class="form-control" required>
         </div>
         <div class="d-grid">
-            <button type="submit" class="btn btn-login">登入</button>
+            <button type="submit" class="btn btn-login mb-3">登入</button>
         </div>
     </form>
 </div>

@@ -30,7 +30,7 @@ class MemberController extends Controller
         if ($member && Hash::check($validated['password'], $member->password_hash)) {
             Auth::guard('member')->login($member);
             $request->session()->regenerate();
-            return redirect()->intended('front.index');
+            return redirect()->route('member.dashboard');
         }
 
         return back()->withErrors([
@@ -44,5 +44,11 @@ class MemberController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/member/login');
+    }
+
+    public function dashboard()
+    {
+        // 可以傳資料給 view，如果沒有資料也可以只回傳 view
+        return view('members.dashboard');
     }
 }
