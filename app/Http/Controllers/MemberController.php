@@ -30,7 +30,7 @@ class MemberController extends Controller
         if ($member && Hash::check($validated['password'], $member->password_hash)) {
             Auth::guard('member')->login($member);
             $request->session()->regenerate();
-            return redirect()->intended('/member/dashboard');
+            return redirect()->intended('front.index');
         }
 
         return back()->withErrors([
