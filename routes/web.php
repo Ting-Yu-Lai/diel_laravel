@@ -20,7 +20,10 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('/member/login', [MemberController::class, 'loginForm'])->name('member.loginForm');
 Route::post('/member/login', [MemberController::class, 'login'])->name('member.login');
 Route::post('/member/logout', [MemberController::class, 'logout'])->name('member.logout');
-
+// 註冊頁面
+Route::get('/member/register', [MemberController::class, 'registerForm'])->name('member.registerForm');
+// 處理註冊表單
+Route::post('/member/register', [MemberController::class, 'register'])->name('member.register');
 Route::middleware('auth:member')->group(function () {
     Route::get('/member/dashboard', [MemberController::class, 'dashboard'])->name('member.dashboard');
     Route::post('/member/logout', [MemberController::class, 'logout'])->name('member.logout');

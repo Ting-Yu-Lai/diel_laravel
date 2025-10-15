@@ -46,6 +46,39 @@ class MemberController extends Controller
         return redirect('/member/login');
     }
 
+    public function registerForm()
+    {
+        return view('members.register');
+    }
+
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => 'required|string|max:50|unique:members,username',
+            'email' => 'required|email|max:100|unique:members,email',
+            'password' => 'required|string|min:6|confirmed',
+            'full_name' => 'nullable|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        // 建立帳號
+        $member = Member::create([
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password_hash' => Hash::make($validated['password']),
+            'full_name' => $validated['full_name'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'address' => $validated['address'] ?? null,
+        ]);
+
+        // 自動登入
+        Auth::guard('member')->login($member);
+        $request->session()->regenerate();
+
+        return redirect()->route('member.dashboard')->with('success', '註冊成功！');
+    }
+
     public function dashboard()
     {
         // 可以傳資料給 view，如果沒有資料也可以只回傳 view

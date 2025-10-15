@@ -26,5 +26,8 @@
             <button type="submit" class="btn btn-login mb-3">登入</button>
         </div>
     </form>
+    <div class="d-grid">
+       <a class="btn btn-light" href="{{ route('member.register') }}">註冊</a>
+   </div>
 </div>
 @endsection
