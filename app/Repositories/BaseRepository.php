@@ -4,7 +4,7 @@ namespace App\Repositories\Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-abstract class Repository
+abstract class BaseRepository
 {
     protected Model $model;
 
