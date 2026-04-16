@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    @include('admin.partial.navbar')
+    @include('backend.partial.navbar')
     <div class="container-fluid">
         <div class="row">
-            @include('admin.partial.sidebar')
+            @include('backend.partial.sidebar')
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 @yield('content')
             </main>

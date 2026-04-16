@@ -1,5 +1,5 @@
 
-@extends('admin.layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
 
@@ -14,7 +14,7 @@
 @endif --}}
 <h2>新增輪播圖</h2>
 
-<form action="{{ route('admin.carousel.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('backend.carousel.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div class="mb-3">
@@ -38,6 +38,6 @@
     </div>
 
     <button type="submit" class="btn btn-success">新增</button>
-    <a href="{{ route('admin.carousel.index') }}" class="btn btn-secondary">返回</a>
+    <a href="{{ route('backend.carousel.index') }}" class="btn btn-secondary">返回</a>
 </form>
 @endsection

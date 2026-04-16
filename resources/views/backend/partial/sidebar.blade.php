@@ -2,14 +2,14 @@
     <div class="position-sticky pt-3">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin') ? 'active' : '' }}"
-                    href="{{ route('admin.index') }}">
+                <a class="nav-link {{ request()->is('backend') ? 'active' : '' }}"
+                    href="{{ route('backend.index') }}">
                     <i class="fa-solid fa-house"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/carousel*') ? 'active' : '' }}"
-                    href="{{ route('admin.carousel.index') }}">
+                <a class="nav-link {{ request()->is('backend/carousel*') ? 'active' : '' }}"
+                    href="{{ route('backend.carousel.index') }}">
                     <i class="fa-solid fa-image"></i> 輪播圖管理
                 </a>
             </li>
@@ -30,10 +30,10 @@
                     <i class="fa-solid fa-star"></i> 活動剪影管理
                 </a> --}}
             </li>
-            @if (auth()->user()?->power == 1)
+            @if (Session::get('power') == 1)
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/admin*') ? 'active' : '' }}"
-                        href="{{ route('admin.admin') }}">
+                    <a class="nav-link {{ request()->is('backend/admin*') ? 'active' : '' }}"
+                        href="{{ route('backend.admin.index') }}">
                         <i class="fa-solid fa-users"></i> 帳號管理
                     </a>
                 </li>

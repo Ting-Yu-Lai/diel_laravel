@@ -14,7 +14,7 @@ class CarouselController extends Controller
     {
         //
         $carousels = Carousel::orderBy('order_num')->get();
-        return view('admin.carousel.index', compact('carousels'));
+        return view('backend.carousel.index', compact('carousels'));
     }
 
     /**
@@ -73,7 +73,7 @@ class CarouselController extends Controller
     public function create()
     {
         //
-        return view('admin.carousel.create');
+        return view('backend.carousel.create');
     }
 
     /**
@@ -109,7 +109,7 @@ class CarouselController extends Controller
             'is_active' => $request->has('is_active') ? 1 : 0,
         ]);
 
-        return redirect()->route('admin.carousel.index')->with('success', '新增成功！');
+        return redirect()->route('backend.carousel.index')->with('success', '新增成功！');
     }
 
     /**
@@ -126,7 +126,7 @@ class CarouselController extends Controller
     public function edit(Carousel $carousel)
     {
         $carousel = Carousel::findOrFail($carousel->id);
-        return view('admin.carousel.edit', compact('carousel'));
+        return view('backend.carousel.edit', compact('carousel'));
     }
 
     /**
@@ -163,7 +163,7 @@ class CarouselController extends Controller
         $carousel->is_active = $request->has('is_active') ? 1 : 0;
         $carousel->save();
 
-        return redirect()->route('admin.carousel.index')->with('success', '更新成功！');
+        return redirect()->route('backend.carousel.index')->with('success', '更新成功！');
     }
 
     /**

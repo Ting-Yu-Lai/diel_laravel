@@ -1,8 +1,8 @@
-@extends('admin.layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
     <h2>輪播圖管理</h2>
-    <a href="{{ route('admin.carousel.create') }}" class="btn btn-success mb-3">新增輪播圖</a>
+    <a href="{{ route('backend.carousel.create') }}" class="btn btn-success mb-3">新增輪播圖</a>
     <table class="table">
         <thead>
             <tr>
@@ -22,7 +22,7 @@
                     <td><img src="{{ asset($carousel->image_url) }}" alt="{{ $carousel->title }}" width="150"></td>
                     <td>{{ $carousel->order_num }}</td>
                     <td>
-                        <form action="{{ route('admin.carousel.toggle', $carousel->id) }}" method="POST">
+                        <form action="{{ route('backend.carousel.toggle', $carousel->id) }}" method="POST">
                             @csrf
                             <button class="btn btn-sm {{ $carousel->is_active ? 'btn-success' : 'btn-secondary' }}">
                                 {{ $carousel->is_active ? '顯示' : '隱藏' }}
@@ -30,15 +30,15 @@
                         </form>
                     </td>
                     <td>
-                        <a href="{{ route('admin.carousel.edit', $carousel->id) }}" class="btn btn-sm btn-primary">編輯</a>
+                        <a href="{{ route('backend.carousel.edit', $carousel->id) }}" class="btn btn-sm btn-primary">編輯</a>
 
                         {{-- 上移/下移 --}}
-                        <a href=" {{ route('admin.carousel.swap', ['id' => $carousel->id, 'direction' => 'up']) }}"
+                        <a href=" {{ route('backend.carousel.swap', ['id' => $carousel->id, 'direction' => 'up']) }}"
                             class="btn btn-sm btn-secondary">上移</a>
-                        <a href=" {{ route('admin.carousel.swap', ['id' => $carousel->id, 'direction' => 'down']) }}"
+                        <a href=" {{ route('backend.carousel.swap', ['id' => $carousel->id, 'direction' => 'down']) }}"
                             class="btn btn-sm btn-secondary">下移</a>
 
-                        <form action="{{ route('admin.carousel.destroy', $carousel->id) }}" method="POST"
+                        <form action="{{ route('backend.carousel.destroy', $carousel->id) }}" method="POST"
                             style="display:inline;">
                             @csrf
                             @method('DELETE')

@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function loginForm()
     {
         // dd("hi");
-        return view('admin.login');
+        return view('backend.login');
     }
 
     /**
@@ -38,7 +38,7 @@ class AdminController extends Controller
         Session::put('full_name', $admin->full_name);
         Session::put('power', $admin->power);
 
-        return redirect()->route('admin.index');
+        return redirect()->route('backend.index');
     }
 
     /**
@@ -60,7 +60,7 @@ class AdminController extends Controller
             return redirect()->route('admin.loginForm');
         }
 
-        return view('admin.index');
+        return view('backend.admin.index');
     }
 
     /**

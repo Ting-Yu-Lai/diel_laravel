@@ -22,8 +22,8 @@ class AdminAuth
         }
 
         // 不是店長但想進帳號管理頁
-        if (Session::get('power') != 1 && $request->route()->getName() == 'admin.admins') {
-            return redirect()->route('admin.index')->with('error', '你沒有權限');
+        if (Session::get('power') != 1 && $request->route()->getName() == 'backend.admin.index') {
+            return redirect()->route('backend.index')->with('error', '你沒有權限');
         }
 
         return $next($request);

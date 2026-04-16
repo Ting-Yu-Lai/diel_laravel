@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('backend.layouts.app')
 
 @section('content')
 @if ($errors->any())
@@ -12,7 +12,7 @@
 @endif
     <h2>編輯輪播圖</h2>
 
-    <form action="{{ route('admin.carousel.update', $carousel->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('backend.carousel.update', $carousel->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -43,6 +43,6 @@
         </div>
 
         <button type="submit" class="btn btn-success">更新</button>
-        <a href="{{ route('admin.carousel.index') }}" class="btn btn-secondary">返回</a>
+        <a href="{{ route('backend.carousel.index') }}" class="btn btn-secondary">返回</a>
     </form>
 @endsection

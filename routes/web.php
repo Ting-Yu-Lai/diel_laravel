@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BackController;
 use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\MemberController;
 use App\Http\Middleware\AdminAuth;
@@ -40,29 +41,41 @@ Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.logi
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 // 後台頁面包在 middleware 裡
-Route::middleware([AdminAuth::class])->prefix('admin')->group(function () {
+Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
 
     // 後台首頁
-    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
-
+    Route::get('/', [BackController::class, 'index'])->name('backend.index');
 
     // 輪播圖排序上下移
     Route::get('carousel/{id}/swap/{direction}', [CarouselController::class, 'swapOrder'])
-        ->name('admin.carousel.swap');
+        ->name('backend.carousel.swap');
     // 切換顯示狀態
     Route::post('carousel/{id}/toggle', [CarouselController::class, 'toggleActive'])
-        ->name('admin.carousel.toggle');
+        ->name('backend.carousel.toggle');
 
     // 輪播圖 CRUD
     Route::resource('carousel', CarouselController::class, [
         'names' => [
-            'index'   => 'admin.carousel.index',
-            'create'  => 'admin.carousel.create',
-            'store'   => 'admin.carousel.store',
-            'edit'    => 'admin.carousel.edit',
-            'update'  => 'admin.carousel.update',
-            'destroy' => 'admin.carousel.destroy',
-            'show'    => 'admin.carousel.show', // 可選，如果你要用 show
+            'index'   => 'backend.carousel.index',
+            'create'  => 'backend.carousel.create',
+            'store'   => 'backend.carousel.store',
+            'edit'    => 'backend.carousel.edit',
+            'update'  => 'backend.carousel.update',
+            'destroy' => 'backend.carousel.destroy',
+            'show'    => 'backend.carousel.show',
+        ]
+    ]);
+
+    // 管理者帳號CRUD
+    Route::resource('admin', AdminController::class, [
+        'names' => [
+            'index'   => 'backend.admin.index',
+            'create'  => 'backend.admin.create',
+            'store'   => 'backend.admin.store',
+            'edit'    => 'backend.admin.edit',
+            'update'  => 'backend.admin.update',
+            'destroy' => 'backend.admin.destroy',
+            'show'    => 'backend.admin.show',
         ]
     ]);
 });
