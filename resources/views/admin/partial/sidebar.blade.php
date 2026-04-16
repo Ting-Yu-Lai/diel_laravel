@@ -32,10 +32,10 @@
             </li>
             @if (auth()->user()?->power == 1)
                 <li class="nav-item">
-                    {{-- <a class="nav-link {{ request()->is('admin/admin*') ? 'active' : '' }}"
+                    <a class="nav-link {{ request()->is('admin/admin*') ? 'active' : '' }}"
                         href="{{ route('admin.admin') }}">
                         <i class="fa-solid fa-users"></i> 帳號管理
-                    </a> --}}
+                    </a>
                 </li>
             @endif
         </ul>
