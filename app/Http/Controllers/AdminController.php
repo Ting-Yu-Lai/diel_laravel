@@ -2,45 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
+use App\Http\Requests\Admin\LoginRequest;
+use App\Services\AdminService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
+    public function __construct(
+        private AdminService $adminService,
+    ) {}
+
     /**
      * 顯示登入表單
      */
     public function loginForm()
     {
+        // dd("hi");
         return view('admin.login');
     }
 
     /**
      * 登入流程驗證
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required',
-        ]);
+        $admin = $this->adminService->login($request->username, $request->password);
 
-        $admin = Admin::where('username', $request->username)->first();
+        if (!$admin) {
+            return back()->withErrors(['username' => '帳號或密碼錯誤']);
+        }
 
-        if ($admin && Hash::check($request->password, $admin->password_hash)) {
-            Session::put('admin_id', $admin->admin_id);
-            Session::put('username', $admin->username);
-            Session::put('full_name', $admin->full_name);
-            Session::put('power', $admin->power);
+        Session::put('admin_id', $admin->admin_id);
+        Session::put('username', $admin->username);
+        Session::put('full_name', $admin->full_name);
+        Session::put('power', $admin->power);
 
-            $admin->last_login_at = now();
-            $admin->save();
-
-            return redirect()->route('admin.index');
-        };
-        return back()->withErrors(['username' => '帳號或密碼錯誤']);
+        return redirect()->route('admin.index');
     }
 
     /**
