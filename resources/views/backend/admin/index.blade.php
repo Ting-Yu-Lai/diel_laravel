@@ -1,52 +1,45 @@
 @extends('backend.layouts.app')
 
 @section('content')
-    <h2>管理者帳戶管理</h2>
-    <a href="{{ route('backend.admin.create') }}" class="btn btn-success mb-3">新增管理者帳戶</a>
-    <table class="table">
-        <thead>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">管理者帳號管理</h1>
+    <a href="{{ route('backend.admin.create') }}" class="btn btn-success">新增管理者</a>
+</div>
+
+@if (session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>帳號</th>
+            <th>姓名</th>
+            <th>權限</th>
+            <th>最後登入</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($admins as $admin)
             <tr>
-                <th>ID</th>
-                <th>標題</th>
-                <th>圖片</th>
-                <th>排序</th>
-                <th>狀態</th>
-                <th>操作</th>
+                <td>{{ $admin->id }}</td>
+                <td>{{ $admin->username }}</td>
+                <td>{{ $admin->full_name ?? '-' }}</td>
+                <td>{{ $admin->power == 1 ? '超級管理者' : '一般管理員' }}</td>
+                <td>{{ $admin->last_login_at ?? '-' }}</td>
+                <td>
+                    <a href="{{ route('backend.admin.edit', $admin->id) }}" class="btn btn-sm btn-primary">編輯</a>
+                    <form action="{{ route('backend.admin.destroy', $admin->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger"
+                            onclick="return confirm('確定刪除？')">刪除</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach ($carousels as $carousel)
-                <tr>
-                    <td>{{ $carousel->id }}</td>
-                    <td>{{ $carousel->title }}</td>
-                    <td><img src="{{ asset($carousel->image_url) }}" alt="{{ $carousel->title }}" width="150"></td>
-                    <td>{{ $carousel->order_num }}</td>
-                    <td>
-                        <form action="{{ route('backend.carousel.toggle', $carousel->id) }}" method="POST">
-                            @csrf
-                            <button class="btn btn-sm {{ $carousel->is_active ? 'btn-success' : 'btn-secondary' }}">
-                                {{ $carousel->is_active ? '顯示' : '隱藏' }}
-                            </button>
-                        </form>
-                    </td>
-                    <td>
-                        <a href="{{ route('backend.carousel.edit', $carousel->id) }}" class="btn btn-sm btn-primary">編輯</a>
-
-                        {{-- 上移/下移 --}}
-                        <a href=" {{ route('backend.carousel.swap', ['id' => $carousel->id, 'direction' => 'up']) }}"
-                            class="btn btn-sm btn-secondary">上移</a>
-                        <a href=" {{ route('backend.carousel.swap', ['id' => $carousel->id, 'direction' => 'down']) }}"
-                            class="btn btn-sm btn-secondary">下移</a>
-
-                        <form action="{{ route('backend.carousel.destroy', $carousel->id) }}" method="POST"
-                            style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger">刪除</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @endforeach
+    </tbody>
+</table>
 @endsection
