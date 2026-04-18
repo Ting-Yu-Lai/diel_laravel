@@ -5,6 +5,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BackController;
 use App\Http\Controllers\CarouselController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MemberController;
 use App\Http\Middleware\AdminAuth;
 
@@ -63,6 +64,19 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
             'update'  => 'backend.carousel.update',
             'destroy' => 'backend.carousel.destroy',
             'show'    => 'backend.carousel.show',
+        ]
+    ]);
+
+    // 客戶資料 CRUD
+    Route::resource('customer', CustomerController::class, [
+        'names' => [
+            'index'   => 'backend.customer.index',
+            'create'  => 'backend.customer.create',
+            'store'   => 'backend.customer.store',
+            'show'    => 'backend.customer.show',
+            'edit'    => 'backend.customer.edit',
+            'update'  => 'backend.customer.update',
+            'destroy' => 'backend.customer.destroy',
         ]
     ]);
 

@@ -14,6 +14,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->is('backend/customer*') ? 'active' : '' }}"
+                    href="{{ route('backend.customer.index') }}">
+                    <i class="fa-solid fa-user-injured"></i> 客戶管理
+                </a>
+            </li>
+            <li class="nav-item">
                 {{-- <a class="nav-link {{ request()->is('admin/dessert*') ? 'active' : '' }}"
                     href="{{ route('admin.dessert') }}">
                     <i class="fa-solid fa-cake-candles"></i> 今日甜點管理
