@@ -12,7 +12,6 @@ class Admin extends Model
 
     //
     protected $table = 'admins';
-    protected $primaryKey = 'admin_id';
     public $timestamps = true;
 
     // 批量賦值白名單 只有白名單才可以修改

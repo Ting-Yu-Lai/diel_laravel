@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\LoginRequest;
+use App\Models\Admin;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -33,11 +34,6 @@ class AdminController extends Controller
             return back()->withErrors(['username' => '帳號或密碼錯誤']);
         }
 
-        Session::put('admin_id', $admin->admin_id);
-        Session::put('username', $admin->username);
-        Session::put('full_name', $admin->full_name);
-        Session::put('power', $admin->power);
-
         return redirect()->route('backend.index');
     }
 
@@ -55,12 +51,8 @@ class AdminController extends Controller
      */
     public function index()
     {
-        // 進入後台驗證是否存在session
-        if(!Session::has('admin_id')) {
-            return redirect()->route('admin.loginForm');
-        }
-
-        return view('backend.admin.index');
+        $admins = $this->adminService->getAll();
+        return view('backend.admin.index', compact('admins'));
     }
 
     /**
