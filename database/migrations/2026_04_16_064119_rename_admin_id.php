@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('admins', function (Blueprint $table) {
-            $table->renameColumn('admin_id', 'id');
+            if (Schema::hasColumn('admins', 'admin_id')) {
+                $table->renameColumn('admin_id', 'id');
+            }
         });
     }
 
