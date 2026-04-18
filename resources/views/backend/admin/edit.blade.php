@@ -15,7 +15,7 @@
     </div>
 @endif
 
-<form action="{{ route('backend.admin.update', $admin->admin_id) }}" method="POST">
+<form action="{{ route('backend.admin.update', $admin->id) }}" method="POST">
     @csrf
     @method('PUT')
 
