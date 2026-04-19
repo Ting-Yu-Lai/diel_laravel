@@ -8,18 +8,37 @@
     </a>
 </div>
 
-{{-- 搜尋列 --}}
-<form method="GET" action="{{ route('backend.customer.index') }}" class="mb-3">
-    <div class="input-group" style="max-width: 400px;">
+{{-- 搜尋列 + 標籤篩選 --}}
+<form method="GET" action="{{ route('backend.customer.index') }}" class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+    <div class="input-group" style="max-width: 360px;">
         <input type="text" name="q" class="form-control" placeholder="搜尋姓名、手機、Email"
             value="{{ request('q') }}">
         <button class="btn btn-outline-secondary" type="submit">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>
-        @if(request('q'))
-            <a href="{{ route('backend.customer.index') }}" class="btn btn-outline-danger">清除</a>
-        @endif
     </div>
+
+    <select name="tag_id" class="form-select" style="max-width: 220px;">
+        <option value="">全部標籤</option>
+        @foreach ($tagCategories as $category)
+            @if ($category->tags->isNotEmpty())
+                <optgroup label="{{ $category->name }}">
+                    @foreach ($category->tags as $tag)
+                        <option value="{{ $tag->id }}"
+                            {{ request('tag_id') == $tag->id ? 'selected' : '' }}>
+                            {{ $tag->name }}
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endif
+        @endforeach
+    </select>
+
+    <button class="btn btn-outline-secondary" type="submit">篩選</button>
+
+    @if(request('q') || request('tag_id'))
+        <a href="{{ route('backend.customer.index') }}" class="btn btn-outline-danger">清除</a>
+    @endif
 </form>
 
 @if (session('success'))
@@ -40,6 +59,7 @@
                 <th>Email</th>
                 <th>來源</th>
                 <th>狀態</th>
+                <th>標籤</th>
                 <th>建立日期</th>
                 <th>操作</th>
             </tr>
@@ -73,6 +93,11 @@
                             <span class="badge bg-secondary">停用</span>
                         @endif
                     </td>
+                    <td>
+                        @foreach ($customer->tags as $tag)
+                            <span class="badge bg-primary me-1">{{ $tag->name }}</span>
+                        @endforeach
+                    </td>
                     <td>{{ $customer->created_at->format('Y-m-d') }}</td>
                     <td>
                         <a href="{{ route('backend.customer.show', $customer->id) }}"
@@ -90,9 +115,11 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" class="text-center text-muted py-4">
+                    <td colspan="10" class="text-center text-muted py-4">
                         @if(request('q'))
                             找不到符合「{{ request('q') }}」的客戶
+                        @elseif(request('tag_id'))
+                            找不到含有此標籤的客戶
                         @else
                             尚無客戶資料
                         @endif

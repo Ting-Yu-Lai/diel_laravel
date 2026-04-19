@@ -121,6 +121,80 @@
     </div>
 </form>
 
+{{-- 標籤指派（獨立送出，避免與主表單衝突）--}}
+<h5 class="mt-5 mb-3 border-bottom pb-1">
+    <i class="fa-solid fa-tags me-1"></i> 標籤
+</h5>
+<div id="tagAlertBox" class="d-none mb-3"></div>
+
+@if ($tagCategories->isEmpty())
+    <p class="text-muted">尚無標籤，請先至<a href="{{ route('backend.tag-category.index') }}">標籤管理</a>建立。</p>
+@else
+    <div class="row g-3 mb-3">
+        @foreach ($tagCategories as $category)
+            @if ($category->tags->isNotEmpty())
+                <div class="col-md-4">
+                    <p class="fw-bold mb-1">{{ $category->name }}</p>
+                    @foreach ($category->tags as $tag)
+                        <div class="form-check">
+                            <input class="form-check-input tag-checkbox" type="checkbox"
+                                value="{{ $tag->id }}" id="tag_{{ $tag->id }}"
+                                {{ in_array($tag->id, $assignedTagIds) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="tag_{{ $tag->id }}">
+                                {{ $tag->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        @endforeach
+    </div>
+    <button id="saveTagsBtn" class="btn btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i> 儲存標籤
+    </button>
+@endif
+
+<script>
+document.getElementById('saveTagsBtn')?.addEventListener('click', async function () {
+    const btn = this;
+    const alertBox = document.getElementById('tagAlertBox');
+    const tagIds = [...document.querySelectorAll('.tag-checkbox:checked')].map(el => el.value);
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 儲存中...';
+
+    try {
+        const res = await fetch('{{ route('backend.customer.syncTags', $customer->id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ tag_ids: tagIds }),
+        });
+
+        const json = await res.json();
+
+        if (res.ok) {
+            alertBox.className = 'alert alert-success';
+            alertBox.textContent = json.message ?? '標籤已更新！';
+        } else {
+            alertBox.className = 'alert alert-danger';
+            alertBox.textContent = json.message ?? '發生錯誤';
+        }
+        alertBox.classList.remove('d-none');
+    } catch (err) {
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = '網路錯誤，請稍後再試';
+        alertBox.classList.remove('d-none');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> 儲存標籤';
+    }
+});
+</script>
+
 <script>
 document.getElementById('customerForm').addEventListener('submit', async function (e) {
     e.preventDefault();

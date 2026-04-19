@@ -14,12 +14,12 @@ class CustomerService
 
     public function getAll(): Collection
     {
-        return $this->customerRepository->all();
+        return $this->customerRepository->all()->loadMissing('tags');
     }
 
     public function search(string $keyword): Collection
     {
-        return $this->customerRepository->search($keyword);
+        return $this->customerRepository->search($keyword)->loadMissing('tags');
     }
 
     public function findById(int $id): ?Customer
@@ -40,5 +40,16 @@ class CustomerService
     public function delete(int $id): bool
     {
         return $this->customerRepository->delete($id);
+    }
+
+    public function filterByTag(int $tagId): Collection
+    {
+        return $this->customerRepository->filterByTag($tagId)->loadMissing('tags');
+    }
+
+    public function syncTags(int $id, array $tagIds): void
+    {
+        $customer = $this->customerRepository->find($id);
+        $customer->tags()->sync($tagIds);
     }
 }

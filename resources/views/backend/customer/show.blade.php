@@ -127,5 +127,31 @@
         </div>
     </div>
 
+    {{-- 標籤 --}}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header fw-bold">
+                <i class="fa-solid fa-tags me-1"></i> 標籤
+            </div>
+            <div class="card-body">
+                @if ($customer->tags->isEmpty())
+                    <span class="text-muted">尚未指派標籤</span>
+                @else
+                    @php
+                        $tagsByCategory = $customer->tags->groupBy(fn($tag) => $tag->category->name ?? '未分類');
+                    @endphp
+                    @foreach ($tagsByCategory as $categoryName => $tags)
+                        <div class="mb-2">
+                            <small class="text-muted me-2">{{ $categoryName }}</small>
+                            @foreach ($tags as $tag)
+                                <span class="badge bg-primary me-1">{{ $tag->name }}</span>
+                            @endforeach
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection

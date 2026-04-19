@@ -20,4 +20,11 @@ class CustomerRepository extends BaseRepository
             ->orWhere('email', 'like', "%{$keyword}%")
             ->get();
     }
+
+    public function filterByTag(int $tagId): Collection
+    {
+        return $this->model
+            ->whereHas('tags', fn($q) => $q->where('tags.id', $tagId))
+            ->get();
+    }
 }
