@@ -32,6 +32,29 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->is('backend/treatment*') ? 'active' : 'collapsed' }}"
+                    data-bs-toggle="collapse" href="#treatmentMenu" role="button"
+                    aria-expanded="{{ request()->is('backend/treatment*') ? 'true' : 'false' }}">
+                    <i class="fa-solid fa-syringe"></i> 療程管理
+                </a>
+                <div class="collapse {{ request()->is('backend/treatment*') ? 'show' : '' }}" id="treatmentMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/treatment-category*') ? 'active' : '' }}"
+                                href="{{ route('backend.treatment-category.index') }}">
+                                療程分類
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/treatment') || (request()->is('backend/treatment/*') && !request()->is('backend/treatment-category*')) ? 'active' : '' }}"
+                                href="{{ route('backend.treatment.index') }}">
+                                療程項目
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
                 {{-- <a class="nav-link {{ request()->is('admin/dessert*') ? 'active' : '' }}"
                     href="{{ route('admin.dessert') }}">
                     <i class="fa-solid fa-cake-candles"></i> 今日甜點管理

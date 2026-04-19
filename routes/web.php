@@ -11,6 +11,8 @@ use App\Http\Controllers\JobTitleController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TagCategoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TreatmentCategoryController;
+use App\Http\Controllers\TreatmentController;
 use App\Http\Middleware\AdminAuth;
 
 
@@ -136,6 +138,34 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
         ->name('backend.tag.update');
     Route::delete('tag/{id}', [TagController::class, 'destroy'])
         ->name('backend.tag.destroy');
+
+    // 療程分類 CRUD
+    Route::resource('treatment-category', TreatmentCategoryController::class, [
+        'names' => [
+            'index'   => 'backend.treatment-category.index',
+            'create'  => 'backend.treatment-category.create',
+            'store'   => 'backend.treatment-category.store',
+            'edit'    => 'backend.treatment-category.edit',
+            'update'  => 'backend.treatment-category.update',
+            'destroy' => 'backend.treatment-category.destroy',
+        ],
+        'except' => ['show'],
+    ]);
+
+    // 療程項目（toggle 放在 resource 前避免 {treatment} 路由衝突）
+    Route::post('treatment/{id}/toggle', [TreatmentController::class, 'toggle'])
+        ->name('backend.treatment.toggle');
+    Route::resource('treatment', TreatmentController::class, [
+        'names' => [
+            'index'   => 'backend.treatment.index',
+            'create'  => 'backend.treatment.create',
+            'store'   => 'backend.treatment.store',
+            'edit'    => 'backend.treatment.edit',
+            'update'  => 'backend.treatment.update',
+            'destroy' => 'backend.treatment.destroy',
+        ],
+        'except' => ['show'],
+    ]);
 
     // 管理者帳號CRUD
     Route::resource('admin', AdminController::class, [
