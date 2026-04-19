@@ -35,4 +35,9 @@ class Customer extends Model
         'birth_date' => 'date',
         'is_active'  => 'boolean',
     ];
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'customer_tag');
+    }
 }

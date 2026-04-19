@@ -20,6 +20,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->is('backend/staff*') ? 'active' : '' }}"
+                    href="{{ route('backend.staff.index') }}">
+                    <i class="fa-solid fa-user-tie"></i> 工作人員管理
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('backend/tag*') ? 'active' : '' }}"
+                    href="{{ route('backend.tag-category.index') }}">
+                    <i class="fa-solid fa-tags"></i> 標籤管理
+                </a>
+            </li>
+            <li class="nav-item">
                 {{-- <a class="nav-link {{ request()->is('admin/dessert*') ? 'active' : '' }}"
                     href="{{ route('admin.dessert') }}">
                     <i class="fa-solid fa-cake-candles"></i> 今日甜點管理
@@ -37,6 +49,12 @@
                 </a> --}}
             </li>
             @if (Session::get('power') == 1)
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('backend/job-title*') ? 'active' : '' }}"
+                        href="{{ route('backend.job-title.index') }}">
+                        <i class="fa-solid fa-briefcase"></i> 職稱管理
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('backend/admin*') ? 'active' : '' }}"
                         href="{{ route('backend.admin.index') }}">

@@ -7,6 +7,10 @@ use App\Http\Controllers\BackController;
 use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\JobTitleController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\TagCategoryController;
+use App\Http\Controllers\TagController;
 use App\Http\Middleware\AdminAuth;
 
 
@@ -79,6 +83,59 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
             'destroy' => 'backend.customer.destroy',
         ]
     ]);
+
+    // 職稱管理（僅 power==1）
+    Route::resource('job-title', JobTitleController::class, [
+        'names' => [
+            'index'   => 'backend.job-title.index',
+            'create'  => 'backend.job-title.create',
+            'store'   => 'backend.job-title.store',
+            'edit'    => 'backend.job-title.edit',
+            'update'  => 'backend.job-title.update',
+            'destroy' => 'backend.job-title.destroy',
+        ],
+        'except' => ['show'],
+    ]);
+
+    // 工作人員 CRUD
+    Route::resource('staff', StaffController::class, [
+        'names' => [
+            'index'   => 'backend.staff.index',
+            'create'  => 'backend.staff.create',
+            'store'   => 'backend.staff.store',
+            'show'    => 'backend.staff.show',
+            'edit'    => 'backend.staff.edit',
+            'update'  => 'backend.staff.update',
+            'destroy' => 'backend.staff.destroy',
+        ],
+    ]);
+
+    // 客戶標籤同步
+    Route::post('customer/{id}/tags', [CustomerController::class, 'syncTags'])
+        ->name('backend.customer.syncTags');
+
+    // 標籤分類 CRUD
+    Route::resource('tag-category', TagCategoryController::class, [
+        'names' => [
+            'index'   => 'backend.tag-category.index',
+            'create'  => 'backend.tag-category.create',
+            'store'   => 'backend.tag-category.store',
+            'edit'    => 'backend.tag-category.edit',
+            'update'  => 'backend.tag-category.update',
+            'destroy' => 'backend.tag-category.destroy',
+        ],
+        'except' => ['show'],
+    ]);
+
+    // 標籤 CRUD（store 接在分類下，edit/update/destroy 獨立）
+    Route::post('tag-category/{categoryId}/tag', [TagController::class, 'store'])
+        ->name('backend.tag.store');
+    Route::get('tag/{id}/edit', [TagController::class, 'edit'])
+        ->name('backend.tag.edit');
+    Route::put('tag/{id}', [TagController::class, 'update'])
+        ->name('backend.tag.update');
+    Route::delete('tag/{id}', [TagController::class, 'destroy'])
+        ->name('backend.tag.destroy');
 
     // 管理者帳號CRUD
     Route::resource('admin', AdminController::class, [
