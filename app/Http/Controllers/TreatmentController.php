@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\StoreTreatmentRequest;
 use App\Http\Requests\Admin\UpdateTreatmentRequest;
+use App\Models\Treatment;
 use App\Models\TreatmentCategory;
 use App\Models\TreatmentDeleteLog;
 use App\Services\TreatmentService;
@@ -15,6 +16,23 @@ class TreatmentController extends Controller
     public function __construct(
         private readonly TreatmentService $treatmentService,
     ) {}
+
+    /** 依療程分類回傳啟用中的療程列表，供療程記錄明細表單 AJAX 使用 */
+    public function byCategoryJson(Request $request)
+    {
+        $categoryId = (int) $request->get('category_id', 0);
+
+        if (!$categoryId) {
+            return response()->json([]);
+        }
+
+        $treatments = Treatment::where('treatment_category_id', $categoryId)
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($treatments);
+    }
 
     public function index(Request $request)
     {

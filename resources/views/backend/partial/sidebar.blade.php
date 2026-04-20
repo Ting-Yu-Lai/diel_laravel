@@ -46,9 +46,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('backend/treatment') || (request()->is('backend/treatment/*') && !request()->is('backend/treatment-category*')) ? 'active' : '' }}"
+                            <a class="nav-link {{ request()->is('backend/treatment') || (request()->is('backend/treatment/*') && !request()->is('backend/treatment-category*') && !request()->is('backend/treatment-record*')) ? 'active' : '' }}"
                                 href="{{ route('backend.treatment.index') }}">
                                 療程項目
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/treatment-record*') ? 'active' : '' }}"
+                                href="{{ route('backend.treatment-record.index') }}">
+                                療程紀錄
                             </a>
                         </li>
                     </ul>

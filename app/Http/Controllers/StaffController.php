@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Admin\StoreStaffRequest;
 use App\Http\Requests\Admin\UpdateStaffRequest;
 use App\Models\JobTitle;
+use App\Models\Staff;
 use App\Models\StaffDeleteLog;
 use App\Services\StaffService;
 use Illuminate\Http\Request;
@@ -15,6 +16,33 @@ class StaffController extends Controller
     public function __construct(
         private readonly StaffService $staffService,
     ) {}
+
+    /** 依角色（doctor / nurse）搜尋工作人員，供療程記錄表單 AJAX 使用 */
+    public function searchJson(Request $request)
+    {
+        $role    = $request->get('role', '');
+        $keyword = trim($request->get('q', ''));
+
+        $roleTitleMap = [
+            'doctor' => '醫師',
+            'nurse'  => '護理師',
+        ];
+
+        if (!array_key_exists($role, $roleTitleMap)) {
+            return response()->json([]);
+        }
+
+        $titleKeyword = $roleTitleMap[$role];
+
+        $staffList = Staff::whereHas('jobTitle', fn($q) => $q->where('name', 'like', "%{$titleKeyword}%"))
+            ->where('is_active', true)
+            ->when($keyword !== '', fn($q) => $q->where('name', 'like', "%{$keyword}%"))
+            ->orderBy('name')
+            ->limit(50)
+            ->get(['id', 'name']);
+
+        return response()->json($staffList);
+    }
 
     public function index(Request $request)
     {

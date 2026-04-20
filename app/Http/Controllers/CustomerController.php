@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\StoreCustomerRequest;
 use App\Http\Requests\Admin\UpdateCustomerRequest;
+use App\Models\Customer;
 use App\Models\TagCategory;
 use App\Services\CustomerService;
 use Illuminate\Http\Request;
@@ -72,6 +73,26 @@ class CustomerController extends Controller
         $tagIds = $request->input('tag_ids', []);
         $this->customerService->syncTags($id, $tagIds);
         return response()->json(['message' => '標籤已更新']);
+    }
+
+    public function searchJson(Request $request)
+    {
+        $keyword = trim($request->get('q', ''));
+
+        if ($keyword === '') {
+            return response()->json([]);
+        }
+
+        $customers = Customer::where('is_active', true)
+            ->where(function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%")
+                      ->orWhere('phone', 'like', "%{$keyword}%");
+            })
+            ->orderBy('name')
+            ->limit(20)
+            ->get(['id', 'name', 'phone']);
+
+        return response()->json($customers);
     }
 
     public function destroy(int $id)

@@ -40,4 +40,9 @@ class Customer extends Model
     {
         return $this->belongsToMany(Tag::class, 'customer_tag');
     }
+
+    public function treatmentRecords()
+    {
+        return $this->hasMany(TreatmentRecord::class);
+    }
 }

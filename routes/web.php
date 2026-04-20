@@ -13,6 +13,8 @@ use App\Http\Controllers\TagCategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TreatmentCategoryController;
 use App\Http\Controllers\TreatmentController;
+use App\Http\Controllers\TreatmentRecordController;
+use App\Http\Controllers\TreatmentRecordItemController;
 use App\Http\Middleware\AdminAuth;
 
 
@@ -73,6 +75,10 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
         ]
     ]);
 
+    // 客戶搜尋 API（需置於 resource 路由之前，避免被 {customer} 參數捕獲）
+    Route::get('customer/search-json', [CustomerController::class, 'searchJson'])
+        ->name('backend.customer.searchJson');
+
     // 客戶資料 CRUD
     Route::resource('customer', CustomerController::class, [
         'names' => [
@@ -98,6 +104,10 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
         ],
         'except' => ['show'],
     ]);
+
+    // 工作人員搜尋 API（需置於 resource 路由之前）
+    Route::get('staff/search-json', [StaffController::class, 'searchJson'])
+        ->name('backend.staff.searchJson');
 
     // 工作人員 CRUD
     Route::resource('staff', StaffController::class, [
@@ -152,6 +162,10 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
         'except' => ['show'],
     ]);
 
+    // 療程依分類 JSON API（需置於 resource 路由之前）
+    Route::get('treatment/by-category-json', [TreatmentController::class, 'byCategoryJson'])
+        ->name('backend.treatment.byCategoryJson');
+
     // 療程項目（toggle 放在 resource 前避免 {treatment} 路由衝突）
     Route::post('treatment/{id}/toggle', [TreatmentController::class, 'toggle'])
         ->name('backend.treatment.toggle');
@@ -165,6 +179,31 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
             'destroy' => 'backend.treatment.destroy',
         ],
         'except' => ['show'],
+    ]);
+
+    // 療程紀錄明細 CRUD（巢狀於 treatment-record 下，需置於 treatment-record resource 之前）
+    Route::resource('treatment-record/{recordId}/item', TreatmentRecordItemController::class, [
+        'names' => [
+            'create'  => 'backend.treatment-record-item.create',
+            'store'   => 'backend.treatment-record-item.store',
+            'edit'    => 'backend.treatment-record-item.edit',
+            'update'  => 'backend.treatment-record-item.update',
+            'destroy' => 'backend.treatment-record-item.destroy',
+        ],
+        'only' => ['create', 'store', 'edit', 'update', 'destroy'],
+    ]);
+
+    // 療程紀錄 CRUD
+    Route::resource('treatment-record', TreatmentRecordController::class, [
+        'names' => [
+            'index'   => 'backend.treatment-record.index',
+            'create'  => 'backend.treatment-record.create',
+            'store'   => 'backend.treatment-record.store',
+            'show'    => 'backend.treatment-record.show',
+            'edit'    => 'backend.treatment-record.edit',
+            'update'  => 'backend.treatment-record.update',
+            'destroy' => 'backend.treatment-record.destroy',
+        ],
     ]);
 
     // 管理者帳號CRUD
