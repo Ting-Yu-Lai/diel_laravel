@@ -154,7 +154,7 @@
                             <th class="text-end">成本</th>
                             <th>負責醫師</th>
                             <th>備註</th>
-                            <th style="width:120px;">操作</th>
+                            <th style="width:180px;">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,6 +169,8 @@
                                 <td>
                                     <a href="{{ route('backend.treatment-record-item.edit', [$record->id, $item->id]) }}"
                                        class="btn btn-sm btn-primary">編輯</a>
+                                    <a href="{{ route('backend.follow-up.show-for-item', $item->id) }}"
+                                       class="btn btn-sm btn-info">術後追蹤</a>
                                     @if (Session::get('power') == 1)
                                         <button class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"

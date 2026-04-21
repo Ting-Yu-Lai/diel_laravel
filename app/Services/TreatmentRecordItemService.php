@@ -5,12 +5,14 @@ namespace App\Services;
 use App\Models\TreatmentRecordItem;
 use App\Repositories\TreatmentRecordItemRepository;
 use App\Repositories\TreatmentRecordRepository;
+use App\Services\FollowUpService;
 
 class TreatmentRecordItemService
 {
     public function __construct(
         private readonly TreatmentRecordItemRepository $itemRepo,
         private readonly TreatmentRecordRepository     $recordRepo,
+        private readonly FollowUpService               $followUpService,
     ) {}
 
     public function findById(int $id): ?TreatmentRecordItem
@@ -22,6 +24,7 @@ class TreatmentRecordItemService
     {
         $data['treatment_record_id'] = $recordId;
         $item = $this->itemRepo->create($data);
+        $this->followUpService->createForItem($item->id);
         $this->syncRecordTotals($recordId);
 
         return $item;

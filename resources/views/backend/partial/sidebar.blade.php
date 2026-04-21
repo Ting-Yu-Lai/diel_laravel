@@ -32,12 +32,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('backend/treatment*') ? 'active' : 'collapsed' }}"
+                <a class="nav-link {{ request()->is('backend/treatment*') || request()->is('backend/follow-up*') ? 'active' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#treatmentMenu" role="button"
-                    aria-expanded="{{ request()->is('backend/treatment*') ? 'true' : 'false' }}">
+                    aria-expanded="{{ request()->is('backend/treatment*') || request()->is('backend/follow-up*') ? 'true' : 'false' }}">
                     <i class="fa-solid fa-syringe"></i> 療程管理
                 </a>
-                <div class="collapse {{ request()->is('backend/treatment*') ? 'show' : '' }}" id="treatmentMenu">
+                <div class="collapse {{ request()->is('backend/treatment*') || request()->is('backend/follow-up*') ? 'show' : '' }}" id="treatmentMenu">
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/treatment-category*') ? 'active' : '' }}"
@@ -55,6 +55,13 @@
                             <a class="nav-link {{ request()->is('backend/treatment-record*') ? 'active' : '' }}"
                                 href="{{ route('backend.treatment-record.index') }}">
                                 療程紀錄
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/follow-up*') ? 'active' : '' }}"
+                                href="{{ route('backend.treatment-record.index') }}"
+                                title="請從療程紀錄的明細項目進入術後追蹤">
+                                術後追蹤
                             </a>
                         </li>
                     </ul>

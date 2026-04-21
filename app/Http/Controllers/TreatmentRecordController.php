@@ -51,7 +51,7 @@ class TreatmentRecordController extends Controller
     public function show(int $id)
     {
         $record = $this->service->findById($id);
-        $record->load('customer', 'doctors', 'nurses', 'consultants', 'items.treatment');
+        $record->load('customer', 'doctors', 'nurses', 'consultants', 'items.treatment', 'items.followUp');
 
         return view('backend.treatment-record.show', compact('record'));
     }

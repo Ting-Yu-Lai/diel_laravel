@@ -31,4 +31,9 @@ class TreatmentRecordItem extends Model
     {
         return $this->belongsTo(Staff::class);
     }
+
+    public function followUp()
+    {
+        return $this->hasOne(FollowUp::class);
+    }
 }
