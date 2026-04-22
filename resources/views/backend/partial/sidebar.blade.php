@@ -20,10 +20,29 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('backend/staff*') ? 'active' : '' }}"
-                    href="{{ route('backend.staff.index') }}">
-                    <i class="fa-solid fa-user-tie"></i> 工作人員管理
+                <a class="nav-link {{ request()->is('backend/staff*') || request()->is('backend/job-title*') ? 'active' : 'collapsed' }}"
+                    data-bs-toggle="collapse" href="#staffMenu" role="button"
+                    aria-expanded="{{ request()->is('backend/staff*') || request()->is('backend/job-title*') ? 'true' : 'false' }}">
+                    <i class="fa-solid fa-user-tie"></i> 人員管理
                 </a>
+                <div class="collapse {{ request()->is('backend/staff*') || request()->is('backend/job-title*') ? 'show' : '' }}" id="staffMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/staff*') ? 'active' : '' }}"
+                                href="{{ route('backend.staff.index') }}">
+                                工作人員管理
+                            </a>
+                        </li>
+                        @if (Session::get('power') == 1)
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/job-title*') ? 'active' : '' }}"
+                                href="{{ route('backend.job-title.index') }}">
+                                職稱管理
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('backend/tag*') ? 'active' : '' }}"
@@ -126,12 +145,6 @@
                 </div>
             </li>
             @if (Session::get('power') == 1)
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('backend/job-title*') ? 'active' : '' }}"
-                        href="{{ route('backend.job-title.index') }}">
-                        <i class="fa-solid fa-briefcase"></i> 職稱管理
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('backend/admin*') ? 'active' : '' }}"
                         href="{{ route('backend.admin.index') }}">
