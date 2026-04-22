@@ -16,6 +16,7 @@ use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\TreatmentRecordController;
 use App\Http\Controllers\TreatmentRecordItemController;
+use App\Http\Controllers\ReportController;
 use App\Http\Middleware\AdminAuth;
 
 
@@ -230,6 +231,18 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
             'destroy' => 'backend.treatment-record.destroy',
         ],
     ]);
+
+    // 報表
+    Route::get('report/revenue', [ReportController::class, 'revenue'])->name('backend.report.revenue');
+    Route::get('report/revenue/csv', [ReportController::class, 'csv'])->name('backend.report.revenue.csv');
+    Route::get('report/customer', [ReportController::class, 'customer'])->name('backend.report.customer');
+    Route::get('report/customer/csv', [ReportController::class, 'customerCsv'])->name('backend.report.customer.csv');
+    Route::get('report/treatment', [ReportController::class, 'treatment'])->name('backend.report.treatment');
+    Route::get('report/treatment/csv', [ReportController::class, 'treatmentCsv'])->name('backend.report.treatment.csv');
+    Route::get('report/staff', [ReportController::class, 'staff'])->name('backend.report.staff');
+    Route::get('report/staff/csv', [ReportController::class, 'staffCsv'])->name('backend.report.staff.csv');
+    Route::get('report/pnl', [ReportController::class, 'pnl'])->name('backend.report.pnl');
+    Route::get('report/pnl/csv', [ReportController::class, 'pnlCsv'])->name('backend.report.pnl.csv');
 
     // 管理者帳號CRUD
     Route::resource('admin', AdminController::class, [

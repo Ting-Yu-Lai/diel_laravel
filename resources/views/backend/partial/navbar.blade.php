@@ -3,7 +3,6 @@
         <img src="{{ asset('images/icons/Logo.webp') }}" alt="logo" class="logo-img px-1" height="30">
         晝夜 - 後台管理
     </a>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search">
     <div class="navbar-nav">
         <div class="nav-item text-nowrap">
             <a class="nav-link px-3" href="{{ route('admin.logout') }}">登出</a>

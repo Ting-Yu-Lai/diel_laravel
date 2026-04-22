@@ -84,6 +84,47 @@
                     <i class="fa-solid fa-star"></i> 活動剪影管理
                 </a> --}}
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('backend/report*') ? 'active' : 'collapsed' }}"
+                    data-bs-toggle="collapse" href="#reportMenu" role="button"
+                    aria-expanded="{{ request()->is('backend/report*') ? 'true' : 'false' }}">
+                    <i class="fa-solid fa-chart-line"></i> 報表下載
+                </a>
+                <div class="collapse {{ request()->is('backend/report*') ? 'show' : '' }}" id="reportMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/report/revenue*') ? 'active' : '' }}"
+                                href="{{ route('backend.report.revenue') }}">
+                                營收報表
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/report/customer*') ? 'active' : '' }}"
+                                href="{{ route('backend.report.customer') }}">
+                                客戶分析報表
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/report/treatment*') ? 'active' : '' }}"
+                                href="{{ route('backend.report.treatment') }}">
+                                療程分析報表
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/report/staff*') ? 'active' : '' }}"
+                                href="{{ route('backend.report.staff') }}">
+                                員工績效報表
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/report/pnl*') ? 'active' : '' }}"
+                                href="{{ route('backend.report.pnl') }}">
+                                財務損益報表
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             @if (Session::get('power') == 1)
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('backend/job-title*') ? 'active' : '' }}"
