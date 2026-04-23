@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\LoginRequest;
-use App\Models\Admin;
+use App\Http\Requests\Admin\StoreAdminRequest;
+use App\Http\Requests\Admin\UpdateAdminRequest;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -11,21 +12,14 @@ use Illuminate\Support\Facades\Session;
 class AdminController extends Controller
 {
     public function __construct(
-        private AdminService $adminService,
+        private readonly AdminService $adminService,
     ) {}
 
-    /**
-     * 顯示登入表單
-     */
     public function loginForm()
     {
-        // dd("hi");
         return view('backend.login');
     }
 
-    /**
-     * 登入流程驗證
-     */
     public function login(LoginRequest $request)
     {
         $admin = $this->adminService->login($request->username, $request->password);
@@ -37,69 +31,61 @@ class AdminController extends Controller
         return redirect()->route('backend.index');
     }
 
-    /**
-     * 管理登出
-     */
     public function logout()
     {
         Session::flush();
         return redirect()->route('admin.loginForm');
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $admins = $this->adminService->getAll();
         return view('backend.admin.index', compact('admins'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('backend.admin.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreAdminRequest $request)
     {
-        //
+        $this->adminService->create($request->validated());
+        return redirect()->route('backend.admin.index')->with('success', '管理者帳號已新增');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Admin $admin)
+    public function show(int $id)
     {
-        //
+        return redirect()->route('backend.admin.edit', $id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Admin $admin)
+    public function edit(int $id)
     {
-        //
+        $admin = $this->adminService->findById($id);
+        return view('backend.admin.edit', compact('admin'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Admin $admin)
+    public function update(UpdateAdminRequest $request, int $id)
     {
-        //
+        $this->adminService->update($id, $request->validated());
+        return redirect()->route('backend.admin.index')->with('success', '帳號資料已更新');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Admin $admin)
+    public function destroy(Request $request, int $id)
     {
-        //
+        if (Session::get('power') != 1) {
+            return back()->with('error', '你沒有權限執行此操作');
+        }
+
+        $admin = $this->adminService->findById($id);
+
+        if ($admin->id === Session::get('admin_id')) {
+            return back()->with('error', '無法刪除自己的帳號');
+        }
+
+        $this->adminService->delete($id);
+
+        return redirect()->route('backend.admin.index')
+            ->with('success', "帳號「{$admin->username}」已刪除");
     }
 }

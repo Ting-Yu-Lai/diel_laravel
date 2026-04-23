@@ -5,33 +5,119 @@
     <h1 class="h2">新增管理者帳號</h1>
 </div>
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <form action="{{ route('backend.admin.store') }}" method="POST">
     @csrf
 
     <div class="mb-3">
         <label for="username" class="form-label">帳號</label>
-        <input type="text" name="username" id="username" class="form-control" required>
+        <input type="text" name="username" id="username"
+               class="form-control @error('username') is-invalid @enderror"
+               value="{{ old('username') }}"
+               placeholder="請輸入登入帳號" required>
+        @error('username')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label for="full_name" class="form-label">姓名</label>
-        <input type="text" name="full_name" id="full_name" class="form-control">
+        <input type="text" name="full_name" id="full_name"
+               class="form-control @error('full_name') is-invalid @enderror"
+               value="{{ old('full_name') }}"
+               placeholder="請輸入真實姓名（選填）">
+        @error('full_name')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label for="password" class="form-label">密碼</label>
-        <input type="password" name="password" id="password" class="form-control" required>
+        <div class="input-group">
+            <input type="password" name="password" id="password"
+                   class="form-control @error('password') is-invalid @enderror"
+                   placeholder="至少 8 位，含大小寫字母、數字、特殊符號"
+                   required>
+            <button type="button" class="btn btn-outline-secondary" id="togglePassword" tabindex="-1">
+                <i class="fa fa-eye" id="toggleIcon"></i>
+            </button>
+            @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mt-2 ps-1" id="pwdRules">
+            <small class="d-block pw-rule" data-rule="length">
+                <i class="fa fa-times-circle text-danger me-1"></i>長度至少 8 個字元
+            </small>
+            <small class="d-block pw-rule" data-rule="lower">
+                <i class="fa fa-times-circle text-danger me-1"></i>包含小寫字母（a-z）
+            </small>
+            <small class="d-block pw-rule" data-rule="upper">
+                <i class="fa fa-times-circle text-danger me-1"></i>包含大寫字母（A-Z）
+            </small>
+            <small class="d-block pw-rule" data-rule="number">
+                <i class="fa fa-times-circle text-danger me-1"></i>包含數字（0-9）
+            </small>
+            <small class="d-block pw-rule" data-rule="special">
+                <i class="fa fa-times-circle text-danger me-1"></i>包含特殊符號（@$!%*#?&^_-）
+            </small>
+        </div>
     </div>
 
     <div class="mb-3">
         <label for="power" class="form-label">權限</label>
-        <select name="power" id="power" class="form-select">
-            <option value="0">一般管理員</option>
-            <option value="1">店長</option>
+        <select name="power" id="power" class="form-select @error('power') is-invalid @enderror">
+            <option value="0" {{ old('power', '0') == '0' ? 'selected' : '' }}>一般管理員</option>
+            <option value="1" {{ old('power') == '1' ? 'selected' : '' }}>店長</option>
         </select>
+        @error('power')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
     </div>
 
     <button type="submit" class="btn btn-success">新增</button>
     <a href="{{ route('backend.admin.index') }}" class="btn btn-secondary">返回</a>
 </form>
+
+<script>
+(function () {
+    const input    = document.getElementById('password');
+    const toggle   = document.getElementById('togglePassword');
+    const icon     = document.getElementById('toggleIcon');
+    const rules    = {
+        length:  v => v.length >= 8,
+        lower:   v => /[a-z]/.test(v),
+        upper:   v => /[A-Z]/.test(v),
+        number:  v => /[0-9]/.test(v),
+        special: v => /[@$!%*#?&^_\-]/.test(v),
+    };
+
+    input.addEventListener('input', function () {
+        const v = this.value;
+        document.querySelectorAll('#pwdRules .pw-rule').forEach(row => {
+            const key  = row.dataset.rule;
+            const pass = rules[key](v);
+            const ico  = row.querySelector('i');
+            ico.className = pass
+                ? 'fa fa-check-circle text-success me-1'
+                : 'fa fa-times-circle text-danger me-1';
+        });
+    });
+
+    toggle.addEventListener('click', function () {
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        icon.className = show ? 'fa fa-eye-slash' : 'fa fa-eye';
+    });
+})();
+</script>
 @endsection
