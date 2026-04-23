@@ -28,17 +28,20 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 // 其他前台頁面可以在這裡加
 // Route::get('/about', [FrontController::class, 'about'])->name('front.about');
 
-// 會員登入
-Route::get('/member/login', [MemberController::class, 'loginForm'])->name('member.loginForm');
-Route::post('/member/login', [MemberController::class, 'login'])->name('member.login');
-Route::post('/member/logout', [MemberController::class, 'logout'])->name('member.logout');
-// 註冊頁面
+// 會員（不需登入）
+Route::get('/member/login',    [MemberController::class, 'loginForm'])->name('member.loginForm');
+Route::post('/member/login',   [MemberController::class, 'login'])->name('member.login');
 Route::get('/member/register', [MemberController::class, 'registerForm'])->name('member.registerForm');
-// 處理註冊表單
-Route::post('/member/register', [MemberController::class, 'register'])->name('member.register');
+Route::post('/member/register',[MemberController::class, 'register'])->name('member.register');
+
+// 會員中心（需登入）
 Route::middleware('auth:member')->group(function () {
-    Route::get('/member/dashboard', [MemberController::class, 'dashboard'])->name('member.dashboard');
-    Route::post('/member/logout', [MemberController::class, 'logout'])->name('member.logout');
+    Route::post('/member/logout',       [MemberController::class, 'logout'])->name('member.logout');
+    Route::get('/member/dashboard',     [MemberController::class, 'dashboard'])->name('member.dashboard');
+    Route::get('/member/profile',       [MemberController::class, 'profile'])->name('member.profile');
+    Route::put('/member/profile',       [MemberController::class, 'updateProfile'])->name('member.profile.update');
+    Route::get('/member/treatments',    [MemberController::class, 'treatments'])->name('member.treatments');
+    Route::get('/member/follow-ups',    [MemberController::class, 'followUps'])->name('member.followUps');
 });
 
 

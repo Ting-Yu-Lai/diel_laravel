@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
@@ -29,12 +30,18 @@ class Customer extends Model
         'source',
         'notes',
         'is_active',
+        'member_id',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
         'is_active'  => 'boolean',
     ];
+
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(Member::class);
+    }
 
     public function tags()
     {

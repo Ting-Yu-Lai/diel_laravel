@@ -24,7 +24,9 @@
 
 <body>
     <div class="position-absolute top-0 start-0 p-3">
-        <a href="{{ route('front.index') }}" class="btn btn-light btn-sm">回首頁</a>
+        <a href="{{ route('front.index') }}">
+            <img src="{{ asset('images/icons/Logo.webp') }}" alt="Diel" height="36">
+        </a>
     </div>
     @yield('content')
 
