@@ -37,6 +37,33 @@
     </div>
 </div>
 
+{{-- LINE 綁定 --}}
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold bg-white border-bottom">
+        <i class="fa-brands fa-line text-success me-2" style="font-size:1rem;"></i>LINE 通知綁定
+    </div>
+    <div class="card-body d-flex align-items-center gap-3">
+        @if ($member->line_user_id)
+            <span class="badge bg-success px-3 py-2">
+                <i class="fa-solid fa-check me-1"></i>已綁定 LINE
+            </span>
+            <form action="{{ route('member.line.unbind') }}" method="POST" class="ms-auto">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-outline-danger btn-sm px-3"
+                        onclick="return confirm('確定要解除 LINE 綁定嗎？')">
+                    解除綁定
+                </button>
+            </form>
+        @else
+            <span class="badge bg-secondary px-3 py-2">尚未綁定 LINE</span>
+            <a href="{{ route('member.line.bind') }}" class="btn btn-success btn-sm px-4 ms-auto">
+                <i class="fa-brands fa-line me-1"></i>綁定 LINE
+            </a>
+        @endif
+    </div>
+</div>
+
 {{-- 可編輯聯絡資訊 --}}
 <div class="card shadow-sm">
     <div class="card-header fw-semibold bg-white border-bottom">

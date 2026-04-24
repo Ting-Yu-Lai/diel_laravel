@@ -21,4 +21,17 @@ class FollowUpLogRepository extends BaseRepository
     {
         FollowUpLogDeleteLog::create($data);
     }
+
+    public function findByFollowUpAndDay(int $followUpId, int $dayNumber): ?FollowUpLog
+    {
+        return $this->model
+            ->where('follow_up_id', $followUpId)
+            ->where('day_number', $dayNumber)
+            ->first();
+    }
+
+    public function hasAnyLog(int $followUpId): bool
+    {
+        return $this->model->where('follow_up_id', $followUpId)->exists();
+    }
 }

@@ -9,14 +9,25 @@
         'completed' => ['label' => '完成',   'badge' => 'bg-success'],
         'abnormal'  => ['label' => '異常',   'badge' => 'bg-danger'],
     ];
-    $current = $statusMap[$followUp->status] ?? $statusMap['ongoing'];
+    $current      = $statusMap[$followUp->status] ?? $statusMap['ongoing'];
+    $lineMember   = $record->customer->member ?? null;
+    $canLineRemind = $lineMember?->line_user_id && $followUp->status === 'ongoing';
 @endphp
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
     <h1 class="h2">術後追蹤</h1>
-    <a href="{{ route('backend.treatment-record.show', $record->id) }}" class="btn btn-secondary">
-        返回療程紀錄
-    </a>
+    <div class="d-flex gap-2">
+        @if ($canLineRemind)
+            <button type="button" id="line-remind-btn"
+                class="btn btn-success"
+                data-member-id="{{ $lineMember->id }}">
+                <i class="fa-brands fa-line"></i> 發送 LINE 提醒
+            </button>
+        @endif
+        <a href="{{ route('backend.treatment-record.show', $record->id) }}" class="btn btn-secondary">
+            返回療程紀錄
+        </a>
+    </div>
 </div>
 
 @if (session('success'))
@@ -370,6 +381,37 @@ document.querySelectorAll('[data-delete-photo-url]').forEach(function (btn) {
         form.submit();
     });
 });
+
+(function () {
+    var remindBtn = document.getElementById('line-remind-btn');
+    if (!remindBtn) return;
+
+    remindBtn.addEventListener('click', function () {
+        var memberId = remindBtn.getAttribute('data-member-id');
+        remindBtn.disabled = true;
+        remindBtn.textContent = '發送中…';
+
+        fetch('/api/line/remind', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ member_id: parseInt(memberId) }),
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            alert(data.message);
+        })
+        .catch(function () {
+            alert('發送失敗，請稍後再試。');
+        })
+        .finally(function () {
+            remindBtn.disabled = false;
+            remindBtn.innerHTML = '<i class="fa-brands fa-line"></i> 發送 LINE 提醒';
+        });
+    });
+})();
 </script>
 
 @endsection

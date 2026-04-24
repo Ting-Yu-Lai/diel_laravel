@@ -7,6 +7,7 @@ use App\Http\Controllers\BackController;
 use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\LineController;
 use App\Http\Controllers\JobTitleController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TagCategoryController;
@@ -36,12 +37,17 @@ Route::post('/member/register',[MemberController::class, 'register'])->name('mem
 
 // 會員中心（需登入）
 Route::middleware('auth:member')->group(function () {
-    Route::post('/member/logout',       [MemberController::class, 'logout'])->name('member.logout');
-    Route::get('/member/dashboard',     [MemberController::class, 'dashboard'])->name('member.dashboard');
-    Route::get('/member/profile',       [MemberController::class, 'profile'])->name('member.profile');
-    Route::put('/member/profile',       [MemberController::class, 'updateProfile'])->name('member.profile.update');
-    Route::get('/member/treatments',    [MemberController::class, 'treatments'])->name('member.treatments');
-    Route::get('/member/follow-ups',    [MemberController::class, 'followUps'])->name('member.followUps');
+    Route::post('/member/logout',           [MemberController::class, 'logout'])->name('member.logout');
+    Route::get('/member/dashboard',         [MemberController::class, 'dashboard'])->name('member.dashboard');
+    Route::get('/member/profile',           [MemberController::class, 'profile'])->name('member.profile');
+    Route::put('/member/profile',           [MemberController::class, 'updateProfile'])->name('member.profile.update');
+    Route::get('/member/treatments',        [MemberController::class, 'treatments'])->name('member.treatments');
+    Route::get('/member/follow-ups',        [MemberController::class, 'followUps'])->name('member.followUps');
+
+    // LINE 綁定
+    Route::get('/member/line/bind',         [LineController::class, 'oauthRedirect'])->name('member.line.bind');
+    Route::get('/member/line/callback',     [LineController::class, 'oauthCallback'])->name('member.line.callback');
+    Route::delete('/member/line/bind',      [LineController::class, 'unbind'])->name('member.line.unbind');
 });
 
 

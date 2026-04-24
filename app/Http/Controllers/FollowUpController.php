@@ -33,7 +33,7 @@ class FollowUpController extends Controller
         $followUp = $this->followUpService->findWithLogs($id);
         $followUp->load(
             'treatmentRecordItem.treatment',
-            'treatmentRecordItem.treatmentRecord.customer'
+            'treatmentRecordItem.treatmentRecord.customer.member'
         );
 
         return view('backend.follow-up.show', compact('followUp'));

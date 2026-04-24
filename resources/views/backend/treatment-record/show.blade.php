@@ -171,6 +171,13 @@
                                        class="btn btn-sm btn-primary">編輯</a>
                                     <a href="{{ route('backend.follow-up.show-for-item', $item->id) }}"
                                        class="btn btn-sm btn-info">術後追蹤</a>
+                                    @if ($record->customer->member?->line_user_id && $item->followUp?->status === 'ongoing')
+                                        <button type="button"
+                                            class="btn btn-sm btn-success line-remind-item-btn"
+                                            data-member-id="{{ $record->customer->member->id }}">
+                                            <i class="fa-brands fa-line"></i>
+                                        </button>
+                                    @endif
                                     @if (Session::get('power') == 1)
                                         <button class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"
@@ -274,4 +281,29 @@ document.getElementById('deleteItemModal').addEventListener('show.bs.modal', fun
 });
 </script>
 @endif
+
+@push('scripts')
+<script>
+document.querySelectorAll('.line-remind-item-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var memberId = btn.getAttribute('data-member-id');
+        btn.disabled = true;
+
+        fetch('/api/line/remind', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ member_id: parseInt(memberId) }),
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (data) { alert(data.message); })
+        .catch(function () { alert('發送失敗，請稍後再試。'); })
+        .finally(function () { btn.disabled = false; });
+    });
+});
+</script>
+@endpush
+
 @endsection

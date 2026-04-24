@@ -17,6 +17,7 @@ class Member extends Authenticatable
         'phone',
         'address',
         'last_login_at',
+        'line_user_id',
     ];
 
     protected $hidden = [
