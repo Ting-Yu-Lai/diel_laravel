@@ -14,10 +14,27 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('backend/customer*') ? 'active' : '' }}"
-                    href="{{ route('backend.customer.index') }}">
+                <a class="nav-link {{ request()->is('backend/customer*') || request()->is('backend/tag*') ? 'active' : 'collapsed' }}"
+                    data-bs-toggle="collapse" href="#customerMenu" role="button"
+                    aria-expanded="{{ request()->is('backend/customer*') || request()->is('backend/tag*') ? 'true' : 'false' }}">
                     <i class="fa-solid fa-user-injured"></i> 客戶管理
                 </a>
+                <div class="collapse {{ request()->is('backend/customer*') || request()->is('backend/tag*') ? 'show' : '' }}" id="customerMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/customer*') ? 'active' : '' }}"
+                                href="{{ route('backend.customer.index') }}">
+                                客戶列表
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/tag*') ? 'active' : '' }}"
+                                href="{{ route('backend.tag-category.index') }}">
+                                標籤管理
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('backend/staff*') || request()->is('backend/job-title*') ? 'active' : 'collapsed' }}"
@@ -43,12 +60,6 @@
                         @endif
                     </ul>
                 </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('backend/tag*') ? 'active' : '' }}"
-                    href="{{ route('backend.tag-category.index') }}">
-                    <i class="fa-solid fa-tags"></i> 標籤管理
-                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('backend/treatment*') || request()->is('backend/follow-up*') ? 'active' : 'collapsed' }}"
