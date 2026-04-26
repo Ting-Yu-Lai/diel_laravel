@@ -71,6 +71,27 @@ class LineService
         }
     }
 
+    public function pushTextWithQuickReply(string $lineUserId, string $text, array $quickReplyItems): void
+    {
+        $res = Http::withToken($this->channelAccessToken)
+            ->post('https://api.line.me/v2/bot/message/push', [
+                'to'       => $lineUserId,
+                'messages' => [[
+                    'type'       => 'text',
+                    'text'       => $text,
+                    'quickReply' => ['items' => $quickReplyItems],
+                ]],
+            ]);
+
+        if ($res->failed()) {
+            Log::error('LINE push quick reply failed', [
+                'userId' => $lineUserId,
+                'status' => $res->status(),
+                'body'   => $res->body(),
+            ]);
+        }
+    }
+
     public function downloadMessageContent(string $messageId): string
     {
         return Http::withToken($this->channelAccessToken)

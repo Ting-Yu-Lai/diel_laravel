@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\FollowUpRepository;
+use App\Repositories\LinePhotoPendingRepository;
 use App\Repositories\MemberRepository;
 use App\Services\LinePhotoService;
 use App\Services\LineReminderService;
@@ -18,11 +19,12 @@ use Illuminate\Support\Str;
 class LineController extends Controller
 {
     public function __construct(
-        private LineService         $lineService,
-        private MemberRepository    $memberRepository,
-        private FollowUpRepository  $followUpRepository,
-        private LineReminderService $lineReminderService,
-        private LinePhotoService    $linePhotoService,
+        private LineService                $lineService,
+        private MemberRepository           $memberRepository,
+        private FollowUpRepository         $followUpRepository,
+        private LineReminderService        $lineReminderService,
+        private LinePhotoService           $linePhotoService,
+        private LinePhotoPendingRepository $pendingRepository,
     ) {}
 
     public function oauthRedirect(): RedirectResponse
@@ -93,6 +95,7 @@ class LineController extends Controller
                 'follow'   => $this->handleFollow($lineUserId),
                 'unfollow' => $this->handleUnfollow($lineUserId),
                 'message'  => $this->handleMessage($event, $lineUserId),
+                'postback' => $this->handlePostback($event, $lineUserId),
                 default    => null,
             };
         }
@@ -151,6 +154,23 @@ class LineController extends Controller
                 'messageId' => $messageId,
                 'error'     => $e->getMessage(),
             ]);
+        }
+    }
+
+    private function handlePostback(array $event, ?string $lineUserId): void
+    {
+        if (! $lineUserId) return;
+
+        parse_str($event['postback']['data'] ?? '', $params);
+        $category = $params['category'] ?? null;
+        if (! in_array($category, ['before', 'recovery', 'after'])) return;
+
+        $this->pendingRepository->upsertCategory($lineUserId, $category);
+
+        $labels     = ['before' => '術前', 'recovery' => '恢復期', 'after' => '術後'];
+        $replyToken = $event['replyToken'] ?? null;
+        if ($replyToken) {
+            $this->lineService->replyMessage($replyToken, "請上傳{$labels[$category]}照片 📷");
         }
     }
 }

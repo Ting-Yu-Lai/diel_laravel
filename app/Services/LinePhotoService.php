@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\FollowUpLogRepository;
 use App\Repositories\FollowUpPhotoRepository;
 use App\Repositories\FollowUpRepository;
+use App\Repositories\LinePhotoPendingRepository;
 use App\Repositories\MemberRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -12,11 +13,12 @@ use Illuminate\Support\Facades\Log;
 class LinePhotoService
 {
     public function __construct(
-        private readonly MemberRepository        $memberRepository,
-        private readonly FollowUpRepository      $followUpRepository,
-        private readonly FollowUpLogRepository   $followUpLogRepository,
-        private readonly FollowUpPhotoRepository $followUpPhotoRepository,
-        private readonly LineService             $lineService,
+        private readonly MemberRepository             $memberRepository,
+        private readonly FollowUpRepository           $followUpRepository,
+        private readonly FollowUpLogRepository        $followUpLogRepository,
+        private readonly FollowUpPhotoRepository      $followUpPhotoRepository,
+        private readonly LineService                  $lineService,
+        private readonly LinePhotoPendingRepository   $pendingRepository,
     ) {}
 
     public function handleIncomingPhoto(string $lineUserId, string $messageId): ?string
@@ -37,11 +39,15 @@ class LinePhotoService
         }
         Log::info('[LinePhoto] followUp found', ['followUpId' => $followUp->id]);
 
-        $isFirst  = ! $this->followUpLogRepository->hasAnyLog($followUp->id);
-        $category = $isFirst ? 'before' : 'after';
-
         $recordDate = $followUp->treatmentRecordItem->treatmentRecord->record_date;
         $dayNumber  = (int) Carbon::parse($recordDate)->diffInDays(Carbon::today());
+
+        // 主動選擇優先；fallback 依同日有無 log 判斷
+        $category = $this->pendingRepository->popCategory($lineUserId);
+        if (! $category) {
+            $existingLog = $this->followUpLogRepository->findByFollowUpAndDay($followUp->id, $dayNumber);
+            $category    = $existingLog ? 'recovery' : 'before';
+        }
         Log::info('[LinePhoto] day/category', ['dayNumber' => $dayNumber, 'category' => $category]);
 
         $log = $this->followUpLogRepository->findByFollowUpAndDay($followUp->id, $dayNumber)
@@ -71,7 +77,8 @@ class LinePhotoService
         ]);
         Log::info('[LinePhoto] photo record created', ['fileName' => $fileName]);
 
-        $label = $category === 'before' ? '術前' : '術後';
+        $labels = ['before' => '術前', 'recovery' => '恢復期', 'after' => '術後'];
+        $label  = $labels[$category] ?? $category;
         return "照片已收到並儲存（第 {$dayNumber} 天 / {$label}照片）。感謝您的回傳！";
     }
 }
