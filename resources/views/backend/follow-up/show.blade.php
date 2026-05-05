@@ -4,6 +4,7 @@
 @php
     $item   = $followUp->treatmentRecordItem;
     $record = $item->treatmentRecord;
+    $suggestedDay = (int) \Carbon\Carbon::parse($record->record_date)->diffInDays(now());
     $statusMap = [
         'ongoing'   => ['label' => '進行中', 'badge' => 'bg-warning text-dark'],
         'completed' => ['label' => '完成',   'badge' => 'bg-success'],
@@ -125,7 +126,7 @@
                             <label class="form-label fw-semibold">第幾天 <span class="text-danger">*</span></label>
                             <input type="number" name="day_number" min="1"
                                 class="form-control @error('day_number') is-invalid @enderror"
-                                value="{{ old('day_number') }}" placeholder="例：1">
+                                value="{{ old('day_number', $suggestedDay) }}" placeholder="例：1">
                             @error('day_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
