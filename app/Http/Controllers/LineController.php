@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -139,6 +140,12 @@ class LineController extends Controller
 
         $messageId  = $event['message']['id'];
         $replyToken = $event['replyToken'] ?? null;
+
+        // 同一 messageId 只處理一次，防止 LINE webhook 重試造成重複下載
+        if (! Cache::add('line_msg_' . $messageId, 1, now()->addMinutes(10))) {
+            Log::info('[LinePhoto] duplicate messageId skipped', ['messageId' => $messageId]);
+            return;
+        }
 
         try {
             $replyText = $this->linePhotoService->handleIncomingPhoto($lineUserId, $messageId);
