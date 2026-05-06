@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Admin\StoreCustomerRequest;
 use App\Http\Requests\Admin\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Models\CustomerDeleteLog;
 use App\Models\TagCategory;
 use App\Services\CustomerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
 {
@@ -38,11 +40,21 @@ class CustomerController extends Controller
 
     public function store(StoreCustomerRequest $request)
     {
-        $customer = $this->customerService->create($request->validated());
+        $result   = $this->customerService->create($request->validated());
+        $customer = $result['customer'];
+        $status   = $result['member_status'];
+        $password = $result['initial_password'];
+
+        $message = match ($status) {
+            'created' => "客戶新增成功，已自動建立會員帳號（初始密碼：{$password}）",
+            'linked'  => '客戶新增成功，已自動關聯現有會員帳號',
+            default   => '客戶新增成功',
+        };
 
         return response()->json([
-            'message' => '客戶新增成功',
-            'id'      => $customer->id,
+            'message'          => $message,
+            'id'               => $customer->id,
+            'initial_password' => $password,
         ], 201);
     }
 
@@ -83,20 +95,50 @@ class CustomerController extends Controller
             return response()->json([]);
         }
 
+        $digits = preg_replace('/\D/', '', $keyword);
+
         $customers = Customer::where('is_active', true)
-            ->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
-                      ->orWhere('phone', 'like', "%{$keyword}%");
+            ->where(function ($query) use ($keyword, $digits) {
+                $query->where('name', 'like', "%{$keyword}%");
+                if ($digits !== '') {
+                    $query->orWhere('phone', 'like', "%{$digits}%");
+                }
             })
             ->orderBy('name')
             ->limit(20)
             ->get(['id', 'name', 'phone']);
 
-        return response()->json($customers);
+        return response()->json($customers->map(fn($c) => [
+            'id'    => $c->id,
+            'name'  => $c->name,
+            'phone' => $c->formatted_phone,
+        ]));
     }
 
-    public function destroy(int $id)
+    public function destroy(Request $request, int $id)
     {
-        //
+        if (Session::get('power') != 1) {
+            return back()->with('error', '你沒有權限執行此操作');
+        }
+
+        $request->validate([
+            'reason' => 'required|string|max:500',
+        ], [
+            'reason.required' => '請填寫刪除原因',
+        ]);
+
+        $customer = $this->customerService->findById($id);
+
+        CustomerDeleteLog::create([
+            'customer_id'         => $customer->id,
+            'customer_name'       => $customer->name,
+            'deleted_by_admin_id' => Session::get('admin_id'),
+            'reason'              => $request->reason,
+        ]);
+
+        $this->customerService->delete($id);
+
+        return redirect()->route('backend.customer.index')
+            ->with('success', "客戶「{$customer->name}」已刪除");
     }
 }

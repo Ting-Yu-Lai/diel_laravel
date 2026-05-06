@@ -156,11 +156,17 @@ document.getElementById('customerForm').addEventListener('submit', async functio
 
         if (res.ok) {
             alertBox.className = 'alert alert-success';
-            alertBox.textContent = json.message ?? '新增成功！';
+            let msg = json.message ?? '新增成功！';
+            if (json.initial_password) {
+                msg += `\n\n初始密碼：${json.initial_password}（請告知客戶並提醒盡快修改）`;
+            }
+            alertBox.style.whiteSpace = 'pre-line';
+            alertBox.textContent = msg;
             alertBox.classList.remove('d-none');
+            const delay = json.initial_password ? 4000 : 1000;
             setTimeout(() => {
                 window.location.href = '{{ route('backend.customer.index') }}';
-            }, 800);
+            }, delay);
         } else {
             // validation errors
             const errors = json.errors
