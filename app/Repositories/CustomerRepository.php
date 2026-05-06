@@ -14,10 +14,16 @@ class CustomerRepository extends BaseRepository
 
     public function search(string $keyword): Collection
     {
+        $digits = preg_replace('/\D/', '', $keyword);
+
         return $this->model
-            ->where('name', 'like', "%{$keyword}%")
-            ->orWhere('phone', 'like', "%{$keyword}%")
-            ->orWhere('email', 'like', "%{$keyword}%")
+            ->where(function ($q) use ($keyword, $digits) {
+                $q->where('name', 'like', "%{$keyword}%")
+                  ->orWhere('email', 'like', "%{$keyword}%");
+                if ($digits !== '') {
+                    $q->orWhere('phone', 'like', "%{$digits}%");
+                }
+            })
             ->get();
     }
 
