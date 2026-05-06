@@ -14,17 +14,24 @@ class MemberService
         private readonly CustomerRepository $customerRepository,
     ) {}
 
+    private static function normalizePhone(?string $phone): string
+    {
+        return preg_replace('/\D/', '', (string) $phone) ?: ($phone ?? '');
+    }
+
     public function register(array $data): Member
     {
+        $phone = self::normalizePhone($data['phone']);
+
         $member = $this->memberRepository->create([
             'password_hash' => Hash::make($data['password']),
             'full_name'     => $data['full_name'],
             'email'         => $data['email'],
-            'phone'         => $data['phone'],
+            'phone'         => $phone,
         ]);
 
         // 若後台已建立同電話的顧客檔案，直接連結；否則新建
-        $existing = $this->customerRepository->findBy('phone', $data['phone']);
+        $existing = $this->customerRepository->findBy('phone', $phone);
 
         if ($existing) {
             $this->customerRepository->update($existing->id, [
@@ -35,7 +42,7 @@ class MemberService
                 'member_id' => $member->id,
                 'name'      => $data['full_name'],
                 'email'     => $data['email'],
-                'phone'     => $data['phone'],
+                'phone'     => $phone,
                 'source'    => 'online',
             ]);
         }
@@ -47,7 +54,7 @@ class MemberService
     {
         $member = filter_var($login, FILTER_VALIDATE_EMAIL)
             ? $this->memberRepository->findByEmail($login)
-            : $this->memberRepository->findByPhone($login);
+            : $this->memberRepository->findByPhone(self::normalizePhone($login));
 
         if (!$member || !Hash::check($password, $member->password_hash)) {
             return null;
@@ -82,9 +89,11 @@ class MemberService
 
     public function updateProfile(int $memberId, array $data): void
     {
+        $phone = isset($data['phone']) ? self::normalizePhone($data['phone']) : null;
+
         $this->memberRepository->update($memberId, [
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
+            'phone' => $phone,
         ]);
 
         $member = $this->memberRepository->findWithCustomer($memberId);
@@ -92,7 +101,7 @@ class MemberService
         if ($member?->customer) {
             $this->customerRepository->update($member->customer->id, [
                 'email' => $data['email'],
-                'phone' => $data['phone'] ?? null,
+                'phone' => $phone,
             ]);
         }
     }

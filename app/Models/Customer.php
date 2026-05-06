@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,6 +38,24 @@ class Customer extends Model
         'birth_date' => 'date',
         'is_active'  => 'boolean',
     ];
+
+    public function formattedPhone(): Attribute
+    {
+        return Attribute::get(fn() => self::fmtPhone($this->phone));
+    }
+
+    public function formattedEmergencyPhone(): Attribute
+    {
+        return Attribute::get(fn() => self::fmtPhone($this->emergency_phone));
+    }
+
+    private static function fmtPhone(?string $p): ?string
+    {
+        if ($p && strlen($p) === 10) {
+            return substr($p, 0, 4) . '-' . substr($p, 4, 3) . '-' . substr($p, 7, 3);
+        }
+        return $p;
+    }
 
     public function member(): BelongsTo
     {

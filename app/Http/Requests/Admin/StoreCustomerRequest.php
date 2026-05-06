@@ -11,6 +11,20 @@ class StoreCustomerRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $merge = [];
+        if ($this->has('phone')) {
+            $merge['phone'] = preg_replace('/\D/', '', (string) $this->input('phone'));
+        }
+        if ($this->has('emergency_phone') && $this->input('emergency_phone') !== '') {
+            $merge['emergency_phone'] = preg_replace('/\D/', '', (string) $this->input('emergency_phone'));
+        }
+        if ($merge) {
+            $this->merge($merge);
+        }
+    }
+
     public function rules(): array
     {
         return [

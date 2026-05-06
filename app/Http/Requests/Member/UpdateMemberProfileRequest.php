@@ -13,6 +13,18 @@ class UpdateMemberProfileRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('phone')) {
+            $this->merge(['phone' => self::normalizePhone($this->input('phone'))]);
+        }
+    }
+
+    private static function normalizePhone(?string $phone): string
+    {
+        return preg_replace('/\D/', '', (string) $phone) ?: ($phone ?? '');
+    }
+
     public function rules(): array
     {
         $id = Auth::guard('member')->id();
