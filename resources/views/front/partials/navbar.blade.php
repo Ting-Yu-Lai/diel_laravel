@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="{{ route('front.index') }}">
             <img src="{{ asset('images/icons/Logo.webp') }}" alt="DielBeauty" class="logo-img">
-            <span class="ms-2" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; letter-spacing:0.12em; color:var(--milk-white);">晝夜</span>
+            <span class="ms-2" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; letter-spacing:0.12em; color:var(--milk-white);">新美學</span>
         </a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
