@@ -1,7 +1,7 @@
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-1" href="{{ route('backend.index') }}">
         <img src="{{ asset('images/icons/Logo.webp') }}" alt="logo" class="logo-img px-1" height="30">
-        晝夜 - 後台管理
+        新美學 - 後台管理
     </a>
     <div class="navbar-nav">
         <div class="nav-item text-nowrap">

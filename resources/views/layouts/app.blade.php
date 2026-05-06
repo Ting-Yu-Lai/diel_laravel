@@ -64,7 +64,7 @@
 </main>
 
 <footer class="luxury-footer mt-auto">
-    &copy; DielBeauty 2026. 晝夜新美學
+    &copy; DielBeauty 2026. Diel新美學
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
