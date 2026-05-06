@@ -15,7 +15,7 @@
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 d-flex align-items-center gap-2"
        href="{{ route('front.index') }}">
         <img src="{{ asset('images/icons/Logo.webp') }}" alt="DielBeauty" height="28">
-        <span>晝夜 — 會員中心</span>
+        <span>新美學 — 會員中心</span>
     </a>
     <div class="navbar-nav flex-row align-items-center">
         @auth('member')
