@@ -10,4 +10,12 @@ class FollowUpPhotoRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function hasPreOpPhoto(int $followUpId): bool
+    {
+        return $this->model
+            ->where('follow_up_id', $followUpId)
+            ->where('category', 'before')
+            ->exists();
+    }
 }

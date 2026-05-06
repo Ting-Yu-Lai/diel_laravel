@@ -21,4 +21,14 @@ class FollowUp extends Model
     {
         return $this->hasMany(FollowUpLog::class)->orderBy('day_number');
     }
+
+    public function preOpPhotos()
+    {
+        return $this->hasMany(FollowUpPhoto::class)->where('category', 'before');
+    }
+
+    public function postOpPhotos()
+    {
+        return $this->hasMany(FollowUpPhoto::class)->where('category', 'after');
+    }
 }

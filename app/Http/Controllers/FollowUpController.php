@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Admin\StoreFollowUpLogRequest;
 use App\Http\Requests\Admin\StoreFollowUpPhotoRequest;
-use App\Http\Requests\Admin\UpdateFollowUpLogRequest;
-use App\Models\FollowUpLog;
+use App\Models\FollowUp;
 use App\Models\FollowUpPhoto;
 use App\Models\TreatmentRecordItem;
-use App\Services\FollowUpLogService;
+use App\Repositories\FollowUpLogRepository;
 use App\Services\FollowUpService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class FollowUpController extends Controller
 {
     public function __construct(
-        private readonly FollowUpService    $followUpService,
-        private readonly FollowUpLogService $logService,
+        private readonly FollowUpService       $followUpService,
+        private readonly FollowUpLogRepository $logRepo,
     ) {}
 
     public function showForItem(int $itemId)
@@ -33,7 +31,9 @@ class FollowUpController extends Controller
         $followUp = $this->followUpService->findWithLogs($id);
         $followUp->load(
             'treatmentRecordItem.treatment',
-            'treatmentRecordItem.treatmentRecord.customer.member'
+            'treatmentRecordItem.treatmentRecord.customer.member',
+            'preOpPhotos',
+            'postOpPhotos',
         );
 
         return view('backend.follow-up.show', compact('followUp'));
@@ -55,65 +55,26 @@ class FollowUpController extends Controller
             ->with('success', '追蹤狀態已更新');
     }
 
-    public function storeLog(StoreFollowUpLogRequest $request, int $followUpId)
+    public function storePhoto(StoreFollowUpPhotoRequest $request, int $followUpId): RedirectResponse
     {
-        $this->logService->create($followUpId, $request->only(['day_number', 'content']));
+        $followUp = FollowUp::findOrFail($followUpId);
+        $category = $request->category;
 
-        return redirect()->route('backend.follow-up.show', $followUpId)
-            ->with('success', '追蹤紀錄已新增');
-    }
-
-    public function editLog(int $followUpId, int $logId)
-    {
-        $log     = $this->logService->find($logId);
-        $followUp = $this->followUpService->findWithLogs($followUpId);
-        $followUp->load(
-            'treatmentRecordItem.treatment',
-            'treatmentRecordItem.treatmentRecord.customer'
-        );
-
-        return view('backend.follow-up.log-edit', compact('followUp', 'log'));
-    }
-
-    public function updateLog(UpdateFollowUpLogRequest $request, int $followUpId, int $logId)
-    {
-        $this->logService->update($logId, $request->only(['day_number', 'content']));
-
-        return redirect()->route('backend.follow-up.show', $followUpId)
-            ->with('success', '追蹤紀錄已更新');
-    }
-
-    public function destroyLog(Request $request, int $followUpId, int $logId)
-    {
-        if (Session::get('power') != 1) {
-            return back()->with('error', '你沒有權限執行此操作');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:500',
-        ], [
-            'reason.required' => '請填寫刪除原因',
-        ]);
-
-        $log = $this->logService->findWithPhotos($logId);
-
-        foreach ($log->photos as $photo) {
-            if (file_exists(public_path($photo->photo_url))) {
-                unlink(public_path($photo->photo_url));
-            }
-        }
-
-        $this->logService->delete($logId, $request->reason, (int) Session::get('admin_id'));
-
-        return redirect()->route('backend.follow-up.show', $followUpId)
-            ->with('success', '追蹤紀錄已刪除');
-    }
-
-    public function storePhoto(StoreFollowUpPhotoRequest $request, int $logId)
-    {
         $dir = public_path('uploads/follow-up');
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
+        }
+
+        $logId = null;
+        if ($category === 'recovery') {
+            $dayNumber = (int) $followUp->created_at->startOfDay()->diffInDays(now()->startOfDay());
+            $log = $this->logRepo->findByFollowUpAndDay($followUpId, $dayNumber)
+                ?? $this->logRepo->create([
+                    'follow_up_id' => $followUpId,
+                    'day_number'   => $dayNumber,
+                    'content'      => null,
+                ]);
+            $logId = $log->id;
         }
 
         foreach ($request->file('photos') as $file) {
@@ -122,31 +83,36 @@ class FollowUpController extends Controller
             $file->move($dir, $fileName);
 
             FollowUpPhoto::create([
-                'follow_up_log_id' => $logId,
+                'follow_up_id'     => $category !== 'recovery' ? $followUpId : null,
+                'follow_up_log_id' => $category === 'recovery' ? $logId : null,
                 'photo_url'        => '/uploads/follow-up/' . $fileName,
-                'category'         => $request->category,
+                'category'         => $category,
             ]);
         }
 
-        $log   = FollowUpLog::findOrFail($logId);
+        if ($category === 'after') {
+            $this->followUpService->update($followUpId, ['status' => 'completed']);
+        }
+
         $count = count($request->file('photos'));
 
-        return redirect()->route('backend.follow-up.show', $log->follow_up_id)
+        return redirect()->route('backend.follow-up.show', $followUpId)
             ->with('success', "已上傳 {$count} 張照片");
     }
 
-    public function destroyPhoto(int $logId, int $photoId)
+    public function destroyPhoto(int $photoId): RedirectResponse
     {
-        $photo = FollowUpPhoto::findOrFail($photoId);
+        $photo = FollowUpPhoto::with('followUpLog')->findOrFail($photoId);
 
         if (file_exists(public_path($photo->photo_url))) {
             unlink(public_path($photo->photo_url));
         }
 
-        $log = FollowUpLog::findOrFail($logId);
+        $followUpId = $photo->follow_up_id ?? $photo->followUpLog?->follow_up_id;
+
         $photo->delete();
 
-        return redirect()->route('backend.follow-up.show', $log->follow_up_id)
+        return redirect()->route('backend.follow-up.show', $followUpId)
             ->with('success', '照片已刪除');
     }
 }
