@@ -41,7 +41,7 @@
         </div>
         <div class="col-md-4">
             <label class="form-label">手機 <span class="text-danger">*</span></label>
-            <input type="text" name="phone" class="form-control" value="{{ $customer->phone }}" required>
+            <input type="text" name="phone" class="form-control" value="{{ $customer->formatted_phone }}" required>
         </div>
         <div class="col-md-4">
             <label class="form-label">Email</label>
@@ -80,7 +80,7 @@
         <div class="col-md-4">
             <label class="form-label">電話</label>
             <input type="text" name="emergency_phone" class="form-control"
-                value="{{ $customer->emergency_phone }}">
+                value="{{ $customer->formatted_emergency_phone }}">
         </div>
     </div>
 

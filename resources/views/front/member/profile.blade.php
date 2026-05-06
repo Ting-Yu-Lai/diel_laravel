@@ -88,8 +88,8 @@
                 <label for="phone" class="form-label fw-semibold">手機號碼 <span class="text-danger">*</span></label>
                 <input type="tel" name="phone" id="phone"
                        class="form-control @error('phone') is-invalid @enderror"
-                       value="{{ old('phone', $member->phone) }}"
-                       placeholder="0912345678" required>
+                       value="{{ old('phone', $member->formatted_phone) }}"
+                       placeholder="0912-345-678" required>
                 @error('phone')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

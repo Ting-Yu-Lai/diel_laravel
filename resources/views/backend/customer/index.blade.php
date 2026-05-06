@@ -76,7 +76,7 @@
                             @default  -
                         @endswitch
                     </td>
-                    <td>{{ $customer->phone }}</td>
+                    <td>{{ $customer->formatted_phone }}</td>
                     <td>{{ $customer->email ?? '-' }}</td>
                     <td>
                         @switch($customer->source)
@@ -104,13 +104,12 @@
                             class="btn btn-sm btn-info">檔案</a>
                         <a href="{{ route('backend.customer.edit', $customer->id) }}"
                             class="btn btn-sm btn-primary">編輯</a>
-                        <form action="{{ route('backend.customer.destroy', $customer->id) }}"
-                            method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger"
-                                onclick="return confirm('確定刪除客戶「{{ $customer->name }}」？')">刪除</button>
-                        </form>
+                        @if(session('power') == 1)
+                        <button type="button" class="btn btn-sm btn-danger"
+                            data-bs-toggle="modal" data-bs-target="#deleteModal"
+                            data-id="{{ $customer->id }}"
+                            data-name="{{ $customer->name }}">刪除</button>
+                        @endif
                     </td>
                 </tr>
             @empty
@@ -129,4 +128,45 @@
         </tbody>
     </table>
 </div>
+{{-- 刪除確認 Modal --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>刪除客戶
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body">
+                    <p class="mb-3">確定要刪除客戶 <strong id="deleteCustomerName"></strong>？此操作無法復原。</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">刪除原因 <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3"
+                            placeholder="請說明刪除原因（必填）" required maxlength="500"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-danger">確認刪除</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('deleteModal').addEventListener('show.bs.modal', function (e) {
+    const btn  = e.relatedTarget;
+    const id   = btn.dataset.id;
+    const name = btn.dataset.name;
+    document.getElementById('deleteCustomerName').textContent = '「' + name + '」';
+    document.getElementById('deleteForm').action =
+        '{{ url('backend/customer') }}/' + id;
+    this.querySelector('textarea[name="reason"]').value = '';
+});
+</script>
 @endsection

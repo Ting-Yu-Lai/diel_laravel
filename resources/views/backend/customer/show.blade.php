@@ -79,7 +79,7 @@
             <div class="card-body">
                 <dl class="row mb-0">
                     <dt class="col-sm-4">手機</dt>
-                    <dd class="col-sm-8">{{ $customer->phone }}</dd>
+                    <dd class="col-sm-8">{{ $customer->formatted_phone }}</dd>
 
                     <dt class="col-sm-4">Email</dt>
                     <dd class="col-sm-8">{{ $customer->email ?? '—' }}</dd>
@@ -91,7 +91,7 @@
                     <dd class="col-sm-8 mt-3">{{ $customer->emergency_contact ?? '—' }}</dd>
 
                     <dt class="col-sm-4">緊急電話</dt>
-                    <dd class="col-sm-8">{{ $customer->emergency_phone ?? '—' }}</dd>
+                    <dd class="col-sm-8">{{ $customer->formatted_emergency_phone ?? '—' }}</dd>
                 </dl>
             </div>
         </div>
