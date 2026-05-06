@@ -59,6 +59,7 @@
                 <th>Email</th>
                 <th>來源</th>
                 <th>狀態</th>
+                <th>會員</th>
                 <th>標籤</th>
                 <th>建立日期</th>
                 <th>操作</th>
@@ -94,6 +95,13 @@
                         @endif
                     </td>
                     <td>
+                        @if($customer->member_id)
+                            <span class="badge bg-success">有帳號</span>
+                        @else
+                            <span class="badge bg-secondary">無帳號</span>
+                        @endif
+                    </td>
+                    <td>
                         @foreach ($customer->tags as $tag)
                             <span class="badge bg-primary me-1">{{ $tag->name }}</span>
                         @endforeach
@@ -114,7 +122,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="10" class="text-center text-muted py-4">
+                    <td colspan="11" class="text-center text-muted py-4">
                         @if(request('q'))
                             找不到符合「{{ request('q') }}」的客戶
                         @elseif(request('tag_id'))

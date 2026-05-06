@@ -90,6 +90,11 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
     Route::get('customer/search-json', [CustomerController::class, 'searchJson'])
         ->name('backend.customer.searchJson');
 
+    // 客戶會員帳號管理（需置於 resource 路由之前）
+    Route::post('customer/{id}/member/create',         [CustomerController::class, 'storeMember'])->name('backend.customer.member.store');
+    Route::post('customer/{id}/member/reset-password', [CustomerController::class, 'resetMemberPassword'])->name('backend.customer.member.resetPassword');
+    Route::delete('customer/{id}/member/unlink',       [CustomerController::class, 'unlinkMember'])->name('backend.customer.member.unlink');
+
     // 客戶資料 CRUD
     Route::resource('customer', CustomerController::class, [
         'names' => [

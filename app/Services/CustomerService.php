@@ -18,12 +18,12 @@ class CustomerService
 
     public function getAll(): Collection
     {
-        return $this->customerRepository->all()->loadMissing('tags');
+        return $this->customerRepository->all()->loadMissing('tags', 'member');
     }
 
     public function search(string $keyword): Collection
     {
-        return $this->customerRepository->search($keyword)->loadMissing('tags');
+        return $this->customerRepository->search($keyword)->loadMissing('tags', 'member');
     }
 
     public function findById(int $id): ?Customer
@@ -100,7 +100,49 @@ class CustomerService
 
     public function filterByTag(int $tagId): Collection
     {
-        return $this->customerRepository->filterByTag($tagId)->loadMissing('tags');
+        return $this->customerRepository->filterByTag($tagId)->loadMissing('tags', 'member');
+    }
+
+    public function createMemberForCustomer(int $customerId): array
+    {
+        $customer = $this->customerRepository->find($customerId);
+        if (! $customer) throw new \RuntimeException('找不到客戶');
+        if ($customer->member_id) throw new \RuntimeException('此客戶已有會員帳號');
+        if (! $customer->email || ! $customer->id_number || ! $customer->birth_date) {
+            throw new \RuntimeException('缺少必要欄位（Email、身分證字號、出生日期）');
+        }
+
+        $existing = $this->memberRepository->findByEmail($customer->email);
+        if (! $existing && $customer->phone) {
+            $existing = $this->memberRepository->findByPhone($customer->phone);
+        }
+        if ($existing) {
+            $this->customerRepository->update($customerId, ['member_id' => $existing->id]);
+            return ['member_status' => 'linked', 'initial_password' => null];
+        }
+
+        $password = substr($customer->id_number, -4) . $customer->birth_date->format('md');
+        $member   = $this->memberRepository->create([
+            'full_name'     => $customer->name,
+            'email'         => $customer->email,
+            'phone'         => $customer->phone,
+            'password_hash' => Hash::make($password),
+        ]);
+        $this->customerRepository->update($customerId, ['member_id' => $member->id]);
+        return ['member_status' => 'created', 'initial_password' => $password];
+    }
+
+    public function resetMemberPassword(int $customerId): string
+    {
+        $customer = $this->customerRepository->find($customerId);
+        if (! $customer) throw new \RuntimeException('找不到客戶');
+        if (! $customer->member_id) throw new \RuntimeException('此客戶尚未關聯會員帳號');
+        if (! $customer->id_number || ! $customer->birth_date) {
+            throw new \RuntimeException('缺少身分證字號或出生日期');
+        }
+        $password = substr($customer->id_number, -4) . $customer->birth_date->format('md');
+        $this->memberRepository->update($customer->member_id, ['password_hash' => Hash::make($password)]);
+        return $password;
     }
 
     public function syncTags(int $id, array $tagIds): void

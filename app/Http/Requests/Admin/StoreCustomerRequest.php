@@ -33,7 +33,7 @@ class StoreCustomerRequest extends FormRequest
             'birth_date'        => 'nullable|date',
             'phone'             => 'required|string|max:20|unique:customers,phone',
             'email'             => 'nullable|email|max:100',
-            'id_number'         => 'nullable|string|max:20|unique:customers,id_number',
+            'id_number'         => 'required|string|max:20|unique:customers,id_number',
             'address'           => 'nullable|string|max:200',
             'occupation'        => 'nullable|string|max:50',
             'emergency_contact' => 'nullable|string|max:50',
@@ -53,7 +53,8 @@ class StoreCustomerRequest extends FormRequest
             'name.required'  => '姓名為必填',
             'phone.required' => '手機為必填',
             'phone.unique'   => '此手機號碼已存在',
-            'id_number.unique' => '此身分證字號已存在',
+            'id_number.required' => '身分證字號為必填',
+            'id_number.unique'   => '此身分證字號已存在',
             'email.email'    => 'Email 格式不正確',
         ];
     }

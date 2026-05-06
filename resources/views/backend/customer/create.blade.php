@@ -49,8 +49,8 @@
             <input type="email" name="email" class="form-control">
         </div>
         <div class="col-md-4">
-            <label class="form-label">身分證字號</label>
-            <input type="text" name="id_number" class="form-control">
+            <label class="form-label">身分證字號 <span class="text-danger">*</span></label>
+            <input type="text" name="id_number" class="form-control" required>
         </div>
         <div class="col-md-6">
             <label class="form-label">地址</label>
@@ -120,7 +120,54 @@
     </div>
 </form>
 
+{{-- 密碼顯示 Modal --}}
+<div class="modal fade" id="passwordModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalTitle">初始密碼</h5>
+            </div>
+            <div class="modal-body">
+                <p id="passwordModalMessage" class="mb-3"></p>
+                <div class="input-group">
+                    <input type="text" id="passwordDisplay" class="form-control font-monospace fs-5" readonly>
+                    <button class="btn btn-outline-secondary" type="button" id="copyPasswordBtn">
+                        <i class="fa-solid fa-copy"></i> 複製
+                    </button>
+                </div>
+                <small class="text-muted mt-2 d-block">請告知客戶並提醒盡快修改密碼。</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="passwordModalConfirm">確認並前往列表</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+function showPasswordModal(title, message, password, onConfirm) {
+    document.getElementById('passwordModalTitle').textContent   = title;
+    document.getElementById('passwordModalMessage').textContent = message;
+    document.getElementById('passwordDisplay').value            = password;
+    document.getElementById('passwordModalConfirm').onclick     = function () {
+        bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+        if (onConfirm) onConfirm();
+    };
+    document.getElementById('copyPasswordBtn').onclick = function () {
+        const val = document.getElementById('passwordDisplay').value;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(val).then(() => {
+                this.innerHTML = '<i class="fa-solid fa-check"></i> 已複製';
+                setTimeout(() => { this.innerHTML = '<i class="fa-solid fa-copy"></i> 複製'; }, 2000);
+            });
+        } else {
+            document.getElementById('passwordDisplay').select();
+            document.execCommand('copy');
+        }
+    };
+    new bootstrap.Modal(document.getElementById('passwordModal')).show();
+}
+
 document.getElementById('customerForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -155,18 +202,19 @@ document.getElementById('customerForm').addEventListener('submit', async functio
         const json = await res.json();
 
         if (res.ok) {
-            alertBox.className = 'alert alert-success';
-            let msg = json.message ?? '新增成功！';
             if (json.initial_password) {
-                msg += `\n\n初始密碼：${json.initial_password}（請告知客戶並提醒盡快修改）`;
+                showPasswordModal(
+                    '客戶新增成功',
+                    json.message,
+                    json.initial_password,
+                    () => { window.location.href = '{{ route('backend.customer.index') }}'; }
+                );
+            } else {
+                alertBox.className = 'alert alert-success';
+                alertBox.textContent = json.message ?? '新增成功！';
+                alertBox.classList.remove('d-none');
+                setTimeout(() => { window.location.href = '{{ route('backend.customer.index') }}'; }, 1000);
             }
-            alertBox.style.whiteSpace = 'pre-line';
-            alertBox.textContent = msg;
-            alertBox.classList.remove('d-none');
-            const delay = json.initial_password ? 4000 : 1000;
-            setTimeout(() => {
-                window.location.href = '{{ route('backend.customer.index') }}';
-            }, delay);
         } else {
             // validation errors
             const errors = json.errors

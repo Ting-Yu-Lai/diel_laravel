@@ -61,8 +61,46 @@ class CustomerController extends Controller
     public function show(int $id)
     {
         $customer = $this->customerService->findById($id);
-        $customer->load('tags.category');
+        $customer->load('tags.category', 'member');
         return view('backend.customer.show', compact('customer'));
+    }
+
+    public function storeMember(int $id)
+    {
+        try {
+            $result   = $this->customerService->createMemberForCustomer($id);
+            $password = $result['initial_password'];
+            $message  = $result['member_status'] === 'created'
+                ? "會員帳號建立成功（初始密碼：{$password}）"
+                : '已關聯現有會員帳號';
+            return response()->json([
+                'message'        => $message,
+                'member_status'  => $result['member_status'],
+                'initial_password' => $password,
+            ]);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    public function resetMemberPassword(int $id)
+    {
+        try {
+            $password = $this->customerService->resetMemberPassword($id);
+            return response()->json(['message' => '密碼已重設', 'new_password' => $password]);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    public function unlinkMember(int $id)
+    {
+        $customer = $this->customerService->findById($id);
+        if (! $customer?->member_id) {
+            return back()->with('error', '此客戶尚未關聯會員帳號');
+        }
+        $this->customerService->update($id, ['member_id' => null]);
+        return redirect()->route('backend.customer.show', $id)->with('success', '已解除會員帳號關聯');
     }
 
     public function edit(int $id)
