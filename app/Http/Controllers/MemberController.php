@@ -110,7 +110,12 @@ class MemberController extends Controller
 
         $records = $customer
             ? $customer->treatmentRecords()
-                       ->with(['items.treatment', 'items.followUp.logs.photos'])
+                       ->with([
+                           'items.treatment',
+                           'items.followUp.logs.photos',
+                           'items.followUp.preOpPhotos',
+                           'items.followUp.postOpPhotos',
+                       ])
                        ->orderByDesc('record_date')
                        ->get()
             : collect();
