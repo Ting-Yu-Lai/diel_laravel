@@ -197,24 +197,14 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
         ->name('backend.follow-up.show-for-item');
 
     // 術後追蹤照片（需置於 follow-up/{id} wildcard 之前）
-    Route::post('follow-up/log/{logId}/photo', [FollowUpController::class, 'storePhoto'])
+    Route::post('follow-up/{followUpId}/photo', [FollowUpController::class, 'storePhoto'])
         ->name('backend.follow-up.photo.store');
-    Route::delete('follow-up/log/{logId}/photo/{photoId}', [FollowUpController::class, 'destroyPhoto'])
+    Route::delete('follow-up/photo/{photoId}', [FollowUpController::class, 'destroyPhoto'])
         ->name('backend.follow-up.photo.destroy');
 
     // 術後追蹤主資料
     Route::get('follow-up/{id}', [FollowUpController::class, 'show'])->name('backend.follow-up.show');
     Route::put('follow-up/{id}', [FollowUpController::class, 'update'])->name('backend.follow-up.update');
-
-    // 追蹤紀錄
-    Route::post('follow-up/{followUpId}/log', [FollowUpController::class, 'storeLog'])
-        ->name('backend.follow-up.log.store');
-    Route::get('follow-up/{followUpId}/log/{logId}/edit', [FollowUpController::class, 'editLog'])
-        ->name('backend.follow-up.log.edit');
-    Route::put('follow-up/{followUpId}/log/{logId}', [FollowUpController::class, 'updateLog'])
-        ->name('backend.follow-up.log.update');
-    Route::delete('follow-up/{followUpId}/log/{logId}', [FollowUpController::class, 'destroyLog'])
-        ->name('backend.follow-up.log.destroy');
 
     // 療程紀錄明細 CRUD（巢狀於 treatment-record 下，需置於 treatment-record resource 之前）
     Route::resource('treatment-record/{recordId}/item', TreatmentRecordItemController::class, [
