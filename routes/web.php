@@ -31,7 +31,7 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 
 // 會員（不需登入）
 Route::get('/member/login',    [MemberController::class, 'loginForm'])->name('member.loginForm');
-Route::post('/member/login',   [MemberController::class, 'login'])->name('member.login');
+Route::post('/member/login',   [MemberController::class, 'login'])->name('member.login')->middleware('throttle:5,1');
 Route::get('/member/register', [MemberController::class, 'registerForm'])->name('member.registerForm');
 Route::post('/member/register',[MemberController::class, 'register'])->name('member.register');
 
@@ -43,6 +43,10 @@ Route::middleware('auth:member')->group(function () {
     Route::put('/member/profile',           [MemberController::class, 'updateProfile'])->name('member.profile.update');
     Route::get('/member/treatments',        [MemberController::class, 'treatments'])->name('member.treatments');
     Route::get('/member/follow-ups',        [MemberController::class, 'followUps'])->name('member.followUps');
+
+    // 帳號安全
+    Route::get('/member/security',  [MemberController::class, 'security'])->name('member.security');
+    Route::put('/member/password',  [MemberController::class, 'changePassword'])->name('member.password.update');
 
     // LINE 綁定
     Route::get('/member/line/bind',         [LineController::class, 'oauthRedirect'])->name('member.line.bind');

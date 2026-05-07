@@ -30,8 +30,9 @@ class UpdateMemberProfileRequest extends FormRequest
         $id = Auth::guard('member')->id();
 
         return [
-            'email' => ['required', 'email', 'max:100', Rule::unique('members', 'email')->ignore($id)],
-            'phone' => ['required', 'string', 'max:20',  Rule::unique('members', 'phone')->ignore($id)],
+            'email'   => ['required', 'email', 'max:100', Rule::unique('members', 'email')->ignore($id)],
+            'phone'   => ['required', 'string', 'max:20',  Rule::unique('members', 'phone')->ignore($id)],
+            'address' => ['nullable', 'string', 'max:200'],
         ];
     }
 

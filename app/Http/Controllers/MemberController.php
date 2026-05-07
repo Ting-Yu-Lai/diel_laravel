@@ -66,9 +66,38 @@ class MemberController extends Controller
 
     public function dashboard(): View
     {
-        $member = Auth::guard('member')->user();
+        $member    = Auth::guard('member')->user();
+        $loginLogs = $this->memberService->getRecentLoginLogs(Auth::guard('member')->id());
 
-        return view('front.member.dashboard', compact('member'));
+        return view('front.member.dashboard', compact('member', 'loginLogs'));
+    }
+
+    public function security(): View
+    {
+        return view('front.member.security');
+    }
+
+    public function changePassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password'          => 'required|string',
+            'new_password'              => [
+                'required', 'string', 'confirmed', 'min:8',
+                'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&^_\-]/',
+            ],
+        ]);
+
+        $ok = $this->memberService->changePassword(
+            Auth::guard('member')->id(),
+            $request->input('current_password'),
+            $request->input('new_password'),
+        );
+
+        if (!$ok) {
+            return back()->withErrors(['current_password' => '目前密碼不正確，請重新輸入。']);
+        }
+
+        return redirect()->route('member.profile')->with('success', '密碼已成功更新，下次登入請使用新密碼。');
     }
 
     public function profile(): View

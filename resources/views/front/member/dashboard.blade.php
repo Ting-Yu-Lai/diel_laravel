@@ -96,4 +96,41 @@
     </div>
 </div>
 
+
+{{-- 近期登入記錄 --}}
+<div class="card shadow-sm mt-4">
+    <div class="card-header fw-semibold bg-white border-bottom">
+        <i class="fa-solid fa-shield-halved text-secondary me-2"></i>近期登入記錄
+        <small class="text-muted fw-normal ms-2">（最近 5 次）</small>
+    </div>
+    <div class="card-body p-0">
+        @if ($loginLogs->isEmpty())
+            <div class="text-center text-muted py-4 small">暫無記錄</div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0" style="font-size:.85rem;">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">時間</th>
+                            <th>IP 位址</th>
+                            <th class="pe-3">裝置 / 瀏覽器</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($loginLogs as $log)
+                            <tr>
+                                <td class="ps-3 text-nowrap">{{ $log->created_at->format('Y-m-d H:i') }}</td>
+                                <td class="text-nowrap">{{ $log->ip_address }}</td>
+                                <td class="pe-3 text-muted" style="max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                    {{ $log->user_agent ? mb_substr($log->user_agent, 0, 80) : '—' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
+</div>
+
 @endsection
