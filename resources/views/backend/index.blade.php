@@ -12,7 +12,7 @@
         <div class="card text-center">
             <div class="card-body">
                 <i class="fa-solid fa-image fa-2x"></i>
-                <h5 class="card-title mt-2">輪播圖管理</h5>
+                {{-- <h5 class="card-title mt-2">輪播圖管理</h5> --}}
                 {{-- <a href="{{ route('admin.carousel') }}" class="btn btn-primary btn-sm">管理</a> --}}
             </div>
         </div>

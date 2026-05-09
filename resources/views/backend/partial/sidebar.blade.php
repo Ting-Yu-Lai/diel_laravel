@@ -7,12 +7,12 @@
                     <i class="fa-solid fa-house"></i> Dashboard
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('backend/carousel*') ? 'active' : '' }}"
-                    href="{{ route('backend.carousel.index') }}">
-                    <i class="fa-solid fa-image"></i> 輪播圖管理
-                </a>
-            </li>
+            {{-- <li class="nav-item"> --}}
+                {{-- <a class="nav-link {{ request()->is('backend/carousel*') ? 'active' : '' }}" --}}
+                    {{-- href="{{ route('backend.carousel.index') }}"> --}}
+                    {{-- <i class="fa-solid fa-image"></i> 輪播圖管理 --}}
+                {{-- </a> --}}
+            {{-- </li> --}}
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('backend/customer*') || request()->is('backend/tag*') ? 'active' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#customerMenu" role="button"
