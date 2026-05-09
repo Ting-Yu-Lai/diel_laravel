@@ -21,10 +21,12 @@
     <h1 class="h2">術後追蹤</h1>
     <div class="d-flex gap-2">
         @if ($canLineRemind)
-            <button type="button" id="line-remind-btn" class="btn btn-success"
-                data-member-id="{{ $lineMember->id }}">
-                <i class="fa-brands fa-line"></i> 發送 LINE 提醒
-            </button>
+            <form action="{{ route('backend.follow-up.remind', $followUp->id) }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-brands fa-line"></i> 發送 LINE 提醒
+                </button>
+            </form>
         @endif
         <a href="{{ route('backend.treatment-record.show', $record->id) }}" class="btn btn-secondary">
             返回療程紀錄
@@ -198,7 +200,7 @@
 
         @if (!$isCompleted)
             @php
-                $todayDay = (int) $baseline->diffInDays(now()->startOfDay());
+                $todayDay = (int) $baseline->diffInDays(now()->startOfDay()) + 1;
             @endphp
             <form action="{{ route('backend.follow-up.photo.store', $followUp->id) }}"
                 method="POST" enctype="multipart/form-data" class="border rounded p-2 bg-light">
@@ -338,27 +340,6 @@ document.querySelectorAll('[data-delete-photo-url]').forEach(function (btn) {
     });
 });
 
-(function () {
-    var remindBtn = document.getElementById('line-remind-btn');
-    if (!remindBtn) return;
-    remindBtn.addEventListener('click', function () {
-        var memberId = remindBtn.getAttribute('data-member-id');
-        remindBtn.disabled = true;
-        remindBtn.textContent = '發送中…';
-        fetch('/api/line/remind', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: JSON.stringify({ member_id: parseInt(memberId) }),
-        })
-        .then(function (res) { return res.json(); })
-        .then(function (data) { alert(data.message); })
-        .catch(function () { alert('發送失敗，請稍後再試。'); })
-        .finally(function () {
-            remindBtn.disabled = false;
-            remindBtn.innerHTML = '<i class="fa-brands fa-line"></i> 發送 LINE 提醒';
-        });
-    });
-})();
 </script>
 
 @endsection

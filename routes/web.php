@@ -205,6 +205,10 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
     Route::get('treatment-record-item/{itemId}/follow-up', [FollowUpController::class, 'showForItem'])
         ->name('backend.follow-up.show-for-item');
 
+    // 手動發送 LINE 提醒（需置於 follow-up/{id} wildcard 之前）
+    Route::post('follow-up/{id}/remind', [FollowUpController::class, 'sendReminder'])
+        ->name('backend.follow-up.remind');
+
     // 術後追蹤照片（需置於 follow-up/{id} wildcard 之前）
     Route::post('follow-up/{followUpId}/photo', [FollowUpController::class, 'storePhoto'])
         ->name('backend.follow-up.photo.store');

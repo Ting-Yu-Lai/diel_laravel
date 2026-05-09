@@ -116,6 +116,25 @@ class LineService
         }
     }
 
+    public function pushFlexMessage(string $lineUserId, array $flexContents): void
+    {
+        $res = Http::withToken($this->channelAccessToken)
+            ->post('https://api.line.me/v2/bot/message/push', [
+                'to'       => $lineUserId,
+                'messages' => [[
+                    'type'     => 'flex',
+                    'altText'  => '術後恢復追蹤提醒',
+                    'contents' => $flexContents,
+                ]],
+            ]);
+
+        Log::info('LINE flex push response', [
+            'userId' => $lineUserId,
+            'status' => $res->status(),
+            'body'   => $res->body(),
+        ]);
+    }
+
     public function verifyWebhookSignature(string $rawBody, string $signature): bool
     {
         $expected = base64_encode(hash_hmac('sha256', $rawBody, $this->channelSecret, true));

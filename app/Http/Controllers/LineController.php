@@ -113,11 +113,12 @@ class LineController extends Controller
         if (! $member->line_user_id) {
             return response()->json(['success' => false, 'message' => '此會員尚未綁定 LINE'], 422);
         }
-        if (! $this->followUpRepository->findLatestOngoingByMemberId($member->id)) {
+        $followUp = $this->followUpRepository->findLatestOngoingByMemberId($member->id);
+        if (! $followUp) {
             return response()->json(['success' => false, 'message' => '此會員目前沒有進行中的追蹤項目'], 422);
         }
 
-        $this->lineReminderService->sendReminderToMember($member);
+        $this->lineReminderService->sendReminderForFollowUp($followUp);
 
         return response()->json(['success' => true, 'message' => '提醒訊息已發送']);
     }

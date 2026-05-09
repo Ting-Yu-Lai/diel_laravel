@@ -37,7 +37,7 @@ class LinePhotoService
         }
         Log::info('[LinePhoto] followUp found', ['followUpId' => $followUp->id]);
 
-        $dayNumber = (int) $followUp->created_at->startOfDay()->diffInDays(Carbon::today()->startOfDay());
+        $dayNumber = (int) $followUp->created_at->startOfDay()->diffInDays(Carbon::today()->startOfDay()) + 1;
         Log::info('[LinePhoto] day', ['dayNumber' => $dayNumber]);
 
         $log = $this->followUpLogRepository->findByFollowUpAndDay($followUp->id, $dayNumber)
