@@ -196,7 +196,7 @@
             if (minutesLeft <= 0) {
                 clearInterval(intervalId);
                 modal.hide();
-                if (logoutForm) logoutForm.submit();
+                window.location.href = '{{ route('member.loginForm') }}';
             } else {
                 countdown.textContent = minutesLeft;
             }
