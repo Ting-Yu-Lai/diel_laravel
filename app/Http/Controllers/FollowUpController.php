@@ -8,6 +8,7 @@ use App\Models\FollowUpPhoto;
 use App\Models\TreatmentRecordItem;
 use App\Repositories\FollowUpLogRepository;
 use App\Services\FollowUpService;
+use App\Services\LineReminderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,7 @@ class FollowUpController extends Controller
     public function __construct(
         private readonly FollowUpService       $followUpService,
         private readonly FollowUpLogRepository $logRepo,
+        private readonly LineReminderService   $lineReminderService,
     ) {}
 
     public function showForItem(int $itemId)
@@ -67,7 +69,7 @@ class FollowUpController extends Controller
 
         $logId = null;
         if ($category === 'recovery') {
-            $dayNumber = (int) $followUp->created_at->startOfDay()->diffInDays(now()->startOfDay());
+            $dayNumber = (int) $followUp->created_at->startOfDay()->diffInDays(now()->startOfDay()) + 1;
             $log = $this->logRepo->findByFollowUpAndDay($followUpId, $dayNumber)
                 ?? $this->logRepo->create([
                     'follow_up_id' => $followUpId,
@@ -98,6 +100,29 @@ class FollowUpController extends Controller
 
         return redirect()->route('backend.follow-up.show', $followUpId)
             ->with('success', "已上傳 {$count} 張照片");
+    }
+
+    public function sendReminder(int $id): RedirectResponse
+    {
+        $followUp = FollowUp::findOrFail($id);
+
+        if ($followUp->status !== 'ongoing') {
+            return redirect()->route('backend.follow-up.show', $id)
+                ->with('error', '此追蹤已非進行中，無法發送提醒。');
+        }
+
+        $member = $followUp->load('treatmentRecordItem.treatmentRecord.customer.member')
+            ->treatmentRecordItem->treatmentRecord->customer->member ?? null;
+
+        if (!$member?->line_user_id) {
+            return redirect()->route('backend.follow-up.show', $id)
+                ->with('error', '此客戶尚未綁定 LINE，無法發送提醒。');
+        }
+
+        $this->lineReminderService->sendReminderForFollowUp($followUp);
+
+        return redirect()->route('backend.follow-up.show', $id)
+            ->with('success', 'LINE 提醒已排入佇列，即將發送。');
     }
 
     public function destroyPhoto(int $photoId): RedirectResponse

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\FollowUp;
+use Illuminate\Database\Eloquent\Collection;
 
 class FollowUpRepository extends BaseRepository
 {
@@ -31,5 +32,19 @@ class FollowUpRepository extends BaseRepository
             ->with('treatmentRecordItem.treatmentRecord')
             ->latest('id')
             ->first();
+    }
+
+    public function getOngoingWithLineMembers(): Collection
+    {
+        return $this->model
+            ->where('status', 'ongoing')
+            ->whereHas('treatmentRecordItem.treatmentRecord.customer.member',
+                fn($q) => $q->whereNotNull('line_user_id')
+            )
+            ->with([
+                'treatmentRecordItem.treatment',
+                'treatmentRecordItem.treatmentRecord.customer.member',
+            ])
+            ->get();
     }
 }
