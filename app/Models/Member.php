@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,6 +20,7 @@ class Member extends Authenticatable
         'address',
         'last_login_at',
         'line_user_id',
+        'points_balance',
     ];
 
     protected $hidden = [
@@ -48,5 +50,15 @@ class Member extends Authenticatable
     public function customer(): HasOne
     {
         return $this->hasOne(Customer::class);
+    }
+
+    public function pointsLogs(): HasMany
+    {
+        return $this->hasMany(MemberPointsLog::class);
+    }
+
+    public function redemptionRequests(): HasMany
+    {
+        return $this->hasMany(MemberRedemptionRequest::class);
     }
 }

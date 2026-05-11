@@ -17,6 +17,7 @@ use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\TreatmentRecordController;
 use App\Http\Controllers\TreatmentRecordItemController;
+use App\Http\Controllers\RedemptionRequestController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\AdminAuth;
 
@@ -47,6 +48,10 @@ Route::middleware('auth:member')->group(function () {
     // 帳號安全
     Route::get('/member/security',  [MemberController::class, 'security'])->name('member.security');
     Route::put('/member/password',  [MemberController::class, 'changePassword'])->name('member.password.update');
+
+    // 點數中心
+    Route::get('/member/points',             [MemberController::class, 'points'])->name('member.points');
+    Route::post('/member/points/redeem',     [MemberController::class, 'submitRedemption'])->name('member.points.redeem');
 
     // LINE 綁定
     Route::get('/member/line/bind',         [LineController::class, 'oauthRedirect'])->name('member.line.bind');
@@ -243,6 +248,11 @@ Route::middleware([AdminAuth::class])->prefix('backend')->group(function () {
             'destroy' => 'backend.treatment-record.destroy',
         ],
     ]);
+
+    // 兌換申請管理
+    Route::get('redemption-requests', [RedemptionRequestController::class, 'index'])->name('backend.redemption-request.index');
+    Route::post('redemption-requests/{id}/approve', [RedemptionRequestController::class, 'approve'])->name('backend.redemption-request.approve');
+    Route::post('redemption-requests/{id}/reject',  [RedemptionRequestController::class, 'reject'])->name('backend.redemption-request.reject');
 
     // 報表
     Route::get('report/revenue', [ReportController::class, 'revenue'])->name('backend.report.revenue');

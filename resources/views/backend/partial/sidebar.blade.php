@@ -115,6 +115,18 @@
                 </a> --}}
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->is('backend/redemption-requests*') ? 'active' : '' }}"
+                    href="{{ route('backend.redemption-request.index') }}">
+                    <i class="fa-solid fa-gift"></i> 點數兌換申請
+                    @php
+                        $pendingCount = \App\Models\MemberRedemptionRequest::where('status','pending')->count();
+                    @endphp
+                    @if ($pendingCount > 0)
+                        <span class="badge bg-danger ms-1">{{ $pendingCount }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('backend/report*') ? 'active' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#reportMenu" role="button"
                     aria-expanded="{{ request()->is('backend/report*') ? 'true' : 'false' }}">

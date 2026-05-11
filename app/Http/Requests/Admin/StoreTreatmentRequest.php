@@ -17,6 +17,7 @@ class StoreTreatmentRequest extends FormRequest
             'treatment_category_id' => 'required|integer|exists:treatment_categories,id',
             'name'                  => 'required|string|max:50',
             'is_active'             => 'boolean',
+            'redemption_points'     => 'nullable|integer|min:1|max:99999',
         ];
     }
 

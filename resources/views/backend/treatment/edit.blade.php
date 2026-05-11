@@ -47,6 +47,14 @@
         </div>
     </div>
 
+    <div class="mb-3">
+        <label class="form-label">兌換點數</label>
+        <input type="number" name="redemption_points" class="form-control"
+            value="{{ old('redemption_points', $treatment->redemption_points) }}"
+            min="1" max="99999" placeholder="留空表示不開放兌換">
+        <div class="form-text">會員累積到此點數後可申請兌換此療程</div>
+    </div>
+
     <button type="submit" class="btn btn-success">
         <i class="fa-solid fa-floppy-disk"></i> 儲存
     </button>

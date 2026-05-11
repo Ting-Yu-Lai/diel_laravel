@@ -11,6 +11,7 @@ class TreatmentRecordService
 {
     public function __construct(
         private readonly TreatmentRecordRepository $repo,
+        private readonly MemberPointsService       $memberPointsService,
     ) {}
 
     public function filter(array $params): LengthAwarePaginator
@@ -30,6 +31,17 @@ class TreatmentRecordService
         $record = $this->repo->create($data);
 
         $this->syncStaff($record, $staffByRole);
+
+        $member = $record->load('customer.member')->customer?->member ?? null;
+        if ($member) {
+            $this->memberPointsService->earnPoints(
+                memberId: $member->id,
+                points: 50,
+                source: 'treatment_record',
+                sourceId: $record->id,
+                note: null,
+            );
+        }
 
         return $record;
     }

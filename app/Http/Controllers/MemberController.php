@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Member\StoreMemberRequest;
 use App\Http\Requests\Member\UpdateMemberProfileRequest;
+use App\Models\Treatment;
+use App\Services\MemberPointsService;
 use App\Services\MemberService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +15,8 @@ use Illuminate\View\View;
 class MemberController extends Controller
 {
     public function __construct(
-        private readonly MemberService $memberService,
+        private readonly MemberService       $memberService,
+        private readonly MemberPointsService $memberPointsService,
     ) {}
 
     public function loginForm(): View
@@ -130,6 +133,45 @@ class MemberController extends Controller
             : collect();
 
         return view('front.member.treatments', compact('records'));
+    }
+
+    public function points(): View
+    {
+        $member   = Auth::guard('member')->user();
+        $logs     = $this->memberPointsService->getHistory($member->id);
+        $catalog  = Treatment::whereNotNull('redemption_points')
+            ->where('is_active', true)
+            ->orderBy('redemption_points')
+            ->get();
+        $myRequests = $this->memberPointsService->getMyRedemptionRequests($member->id);
+
+        return view('front.member.points', compact('member', 'logs', 'catalog', 'myRequests'));
+    }
+
+    public function submitRedemption(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'treatment_id' => 'required|integer|exists:treatments,id',
+        ]);
+
+        $member    = Auth::guard('member')->user();
+        $treatment = Treatment::findOrFail($request->treatment_id);
+
+        if (! $treatment->redemption_points) {
+            return back()->with('error', '此療程不開放兌換。');
+        }
+
+        if ($member->points_balance < $treatment->redemption_points) {
+            return back()->with('error', '點數不足，無法申請兌換。');
+        }
+
+        $this->memberPointsService->submitRedemptionRequest(
+            memberId: $member->id,
+            treatmentId: $treatment->id,
+            pointsCost: $treatment->redemption_points,
+        );
+
+        return redirect()->route('member.points')->with('success', '兌換申請已送出，請等待診所審核。');
     }
 
     public function followUps(): View

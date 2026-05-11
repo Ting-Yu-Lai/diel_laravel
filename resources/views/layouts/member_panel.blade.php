@@ -70,6 +70,12 @@
                             <i class="fa-solid fa-heart me-1"></i> 術後追蹤
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('member.points*') ? 'active' : '' }}"
+                           href="{{ route('member.points') }}">
+                            <i class="fa-solid fa-coins me-1"></i> 點數中心
+                        </a>
+                    </li>
                 </ul>
 
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Treatment extends Model
 {
-    protected $fillable = ['treatment_category_id', 'name', 'is_active'];
+    protected $fillable = ['treatment_category_id', 'name', 'is_active', 'redemption_points'];
 
     protected $casts = [
         'is_active' => 'boolean',
