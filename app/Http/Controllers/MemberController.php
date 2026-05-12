@@ -173,24 +173,4 @@ class MemberController extends Controller
 
         return redirect()->route('member.points')->with('success', '兌換申請已送出，請等待診所審核。');
     }
-
-    public function followUps(): View
-    {
-        $member   = $this->memberService->getProfile(Auth::guard('member')->id());
-        $customer = $member?->customer;
-
-        $records = $customer
-            ? $customer->treatmentRecords()
-                       ->with([
-                           'items.treatment',
-                           'items.followUp.logs.photos',
-                           'items.followUp.preOpPhotos',
-                           'items.followUp.postOpPhotos',
-                       ])
-                       ->orderByDesc('record_date')
-                       ->get()
-            : collect();
-
-        return view('front.member.follow-ups', compact('records'));
-    }
 }

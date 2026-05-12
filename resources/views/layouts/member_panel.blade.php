@@ -65,12 +65,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('member.followUps') ? 'active' : '' }}"
-                           href="{{ route('member.followUps') }}">
-                            <i class="fa-solid fa-heart me-1"></i> 術後追蹤
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('member.points*') ? 'active' : '' }}"
                            href="{{ route('member.points') }}">
                             <i class="fa-solid fa-coins me-1"></i> 點數中心

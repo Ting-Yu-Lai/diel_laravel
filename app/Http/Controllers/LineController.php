@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\FollowUpLogRepository;
 use App\Repositories\FollowUpRepository;
 use App\Repositories\MemberRepository;
 use App\Services\LinePhotoService;
@@ -19,11 +20,12 @@ use Illuminate\Support\Str;
 class LineController extends Controller
 {
     public function __construct(
-        private LineService         $lineService,
-        private MemberRepository    $memberRepository,
-        private FollowUpRepository  $followUpRepository,
-        private LineReminderService $lineReminderService,
-        private LinePhotoService    $linePhotoService,
+        private LineService           $lineService,
+        private MemberRepository      $memberRepository,
+        private FollowUpRepository    $followUpRepository,
+        private FollowUpLogRepository $followUpLogRepository,
+        private LineReminderService   $lineReminderService,
+        private LinePhotoService      $linePhotoService,
     ) {}
 
     public function oauthRedirect(): RedirectResponse
@@ -94,6 +96,7 @@ class LineController extends Controller
                 'follow'   => $this->handleFollow($lineUserId),
                 'unfollow' => $this->handleUnfollow($lineUserId),
                 'message'  => $this->handleMessage($event, $lineUserId),
+                'postback' => $this->handlePostback($event, $lineUserId),
                 default    => null,
             };
         }
@@ -121,6 +124,54 @@ class LineController extends Controller
         $this->lineReminderService->sendReminderForFollowUp($followUp);
 
         return response()->json(['success' => true, 'message' => '提醒訊息已發送']);
+    }
+
+    private function handlePostback(array $event, ?string $lineUserId): void
+    {
+        if (! $lineUserId) {
+            return;
+        }
+
+        $data       = $event['postback']['data'] ?? '';
+        $replyToken = $event['replyToken'] ?? null;
+
+        parse_str($data, $params);
+        $action    = $params['action'] ?? '';
+        $followUpId = (int) ($params['fid'] ?? 0);
+        $dayNumber  = (int) ($params['day'] ?? 0);
+
+        if (! $followUpId || ! in_array($action, ['ok', 'abnormal'], true)) {
+            return;
+        }
+
+        $followUp = $this->followUpRepository->find($followUpId);
+        if (! $followUp) {
+            return;
+        }
+
+        $content     = $action === 'ok' ? '本日狀況正常' : '回報異常，待診所聯絡';
+        $existingLog = $this->followUpLogRepository->findByFollowUpAndDay($followUpId, $dayNumber);
+
+        if ($existingLog) {
+            $this->followUpLogRepository->update($existingLog->id, ['content' => $content]);
+        } else {
+            $this->followUpLogRepository->create([
+                'follow_up_id' => $followUpId,
+                'day_number'   => $dayNumber,
+                'content'      => $content,
+            ]);
+        }
+
+        if ($action === 'abnormal') {
+            $this->followUpRepository->update($followUpId, ['status' => 'abnormal']);
+            $replyText = '已收到您的異常回報，診所專人將盡快與您聯繫，請保持電話暢通。如有緊急狀況請立即就醫。';
+        } else {
+            $replyText = '✅ 已記錄，感謝您的回報！恢復順利，請繼續保持術後照護。';
+        }
+
+        if ($replyToken) {
+            $this->lineService->replyMessage($replyToken, $replyText);
+        }
     }
 
     private function handleFollow(?string $lineUserId): void

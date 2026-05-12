@@ -43,7 +43,6 @@ Route::middleware('auth:member')->group(function () {
     Route::get('/member/profile',           [MemberController::class, 'profile'])->name('member.profile');
     Route::put('/member/profile',           [MemberController::class, 'updateProfile'])->name('member.profile.update');
     Route::get('/member/treatments',        [MemberController::class, 'treatments'])->name('member.treatments');
-    Route::get('/member/follow-ups',        [MemberController::class, 'followUps'])->name('member.followUps');
 
     // 帳號安全
     Route::get('/member/security',  [MemberController::class, 'security'])->name('member.security');

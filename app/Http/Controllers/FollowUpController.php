@@ -106,11 +106,6 @@ class FollowUpController extends Controller
     {
         $followUp = FollowUp::findOrFail($id);
 
-        if ($followUp->status !== 'ongoing') {
-            return redirect()->route('backend.follow-up.show', $id)
-                ->with('error', '此追蹤已非進行中，無法發送提醒。');
-        }
-
         $member = $followUp->load('treatmentRecordItem.treatmentRecord.customer.member')
             ->treatmentRecordItem->treatmentRecord->customer->member ?? null;
 
@@ -119,10 +114,10 @@ class FollowUpController extends Controller
                 ->with('error', '此客戶尚未綁定 LINE，無法發送提醒。');
         }
 
-        $this->lineReminderService->sendReminderForFollowUp($followUp);
+        $this->lineReminderService->sendReminderForFollowUp($followUp, sync: true);
 
         return redirect()->route('backend.follow-up.show', $id)
-            ->with('success', 'LINE 提醒已排入佇列，即將發送。');
+            ->with('success', 'LINE 提醒已發送。');
     }
 
     public function destroyPhoto(int $photoId): RedirectResponse

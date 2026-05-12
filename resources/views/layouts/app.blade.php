@@ -36,10 +36,6 @@
                         <a class="nav-link {{ request()->routeIs('member.treatments') ? 'active' : '' }}"
                            href="{{ route('member.treatments') }}">療程紀錄</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('member.followUps') ? 'active' : '' }}"
-                           href="{{ route('member.followUps') }}">術後追蹤</a>
-                    </li>
                     <li class="nav-item ms-lg-2">
                         <form action="{{ route('member.logout') }}" method="POST" class="d-inline">
                             @csrf

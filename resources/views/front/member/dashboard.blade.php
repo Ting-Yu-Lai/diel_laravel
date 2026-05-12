@@ -74,28 +74,6 @@
     </div>
 
     <div class="col-sm-6 col-xl-4">
-        <a href="{{ route('member.followUps') }}" class="text-decoration-none">
-            <div class="card shadow-sm h-100" style="border-left:4px solid #d4a373; transition:transform .15s ease, box-shadow .15s ease;"
-                 onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.12)'"
-                 onmouseout="this.style.transform='';this.style.boxShadow=''">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div style="width:48px; height:48px; border-radius:10px;
-                                background:rgba(212,163,115,0.15);
-                                display:flex; align-items:center; justify-content:center;
-                                font-size:1.2rem; color:#d4a373; flex-shrink:0;">
-                        <i class="fa-solid fa-heart"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <div class="fw-semibold">術後追蹤</div>
-                        <div class="text-muted small">查看術後照護與追蹤紀錄</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted ms-auto" style="font-size:.8rem;"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-sm-6 col-xl-4">
         <a href="{{ route('member.points') }}" class="text-decoration-none">
             <div class="card shadow-sm h-100" style="border-left:4px solid #fda085; transition:transform .15s ease, box-shadow .15s ease;"
                  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.12)'"
