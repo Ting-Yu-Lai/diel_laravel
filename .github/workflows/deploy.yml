@@ -20,8 +20,9 @@ jobs:
             set -e
             cd /var/www/diel_laravel
 
-            echo ">>> git pull"
-            git pull origin main
+            echo ">>> git sync"
+            git fetch origin main
+            git reset --hard origin/main
 
             echo ">>> composer install"
             composer install --no-dev --optimize-autoloader --no-interaction
