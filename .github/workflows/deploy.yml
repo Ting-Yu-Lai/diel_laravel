@@ -21,7 +21,7 @@ jobs:
             cd /var/www/diel_laravel
 
             echo ">>> git sync"
-            sudo -u www-data git config --global --add safe.directory /var/www/diel_laravel
+            sudo git config --system --add safe.directory /var/www/diel_laravel
             sudo -u www-data git fetch origin main
             sudo -u www-data git reset --hard origin/main
 
