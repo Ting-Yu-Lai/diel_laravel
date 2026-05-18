@@ -21,11 +21,11 @@ jobs:
             cd /var/www/diel_laravel
 
             echo ">>> git sync"
-            git fetch origin main
-            git reset --hard origin/main
+            sudo -u www-data git fetch origin main
+            sudo -u www-data git reset --hard origin/main
 
             echo ">>> composer install"
-            composer install --no-dev --optimize-autoloader --no-interaction
+            sudo -u www-data composer install --no-dev --optimize-autoloader --no-interaction
 
             echo ">>> migrate"
             sudo -u www-data php artisan migrate --force
