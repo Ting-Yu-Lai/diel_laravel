@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\StoreTreatmentRecordRequest;
 use App\Http\Requests\Admin\UpdateTreatmentRecordRequest;
+use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Staff;
 use App\Models\TreatmentRecordDeleteLog;
@@ -87,7 +88,7 @@ class TreatmentRecordController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') != 1) {
+        if (Session::get('power') < Admin::ROLE_MANAGER) {
             return back()->with('error', '你沒有權限執行此操作');
         }
 

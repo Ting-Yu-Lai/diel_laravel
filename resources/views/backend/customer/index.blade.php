@@ -112,7 +112,7 @@
                             class="btn btn-sm btn-info">檔案</a>
                         <a href="{{ route('backend.customer.edit', $customer->id) }}"
                             class="btn btn-sm btn-primary">編輯</a>
-                        @if(session('power') == 1)
+                        @if(session('power') >= 1)
                         <button type="button" class="btn btn-sm btn-danger"
                             data-bs-toggle="modal" data-bs-target="#deleteModal"
                             data-id="{{ $customer->id }}"

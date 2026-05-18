@@ -30,6 +30,7 @@ class AdminService
             'username'      => $data['username'],
             'password_hash' => Hash::make($data['password']),
             'full_name'     => $data['full_name'] ?? null,
+            'email'         => $data['email'] ?? null,
             'power'         => $data['power'],
         ]);
     }
@@ -39,6 +40,7 @@ class AdminService
         $payload = [
             'username'  => $data['username'],
             'full_name' => $data['full_name'] ?? null,
+            'email'     => $data['email'] ?? null,
             'power'     => $data['power'],
         ];
 
@@ -52,6 +54,16 @@ class AdminService
     public function delete(int $id): void
     {
         $this->adminRepository->delete($id);
+    }
+
+    public function findByUsername(string $username): ?Admin
+    {
+        return $this->adminRepository->findByUsername($username);
+    }
+
+    public function updateLastLogin(int $id): void
+    {
+        $this->adminRepository->update($id, ['last_login_at' => now()]);
     }
 
     public function login(string $username, string $password): ?Admin

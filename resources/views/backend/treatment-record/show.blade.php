@@ -178,7 +178,7 @@
                                             <i class="fa-brands fa-line"></i>
                                         </button>
                                     @endif
-                                    @if (Session::get('power') == 1)
+                                    @if (Session::get('power') >= 1)
                                         <button class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteItemModal"
@@ -203,7 +203,7 @@
 </div>
 
 {{-- 刪除療程紀錄按鈕 --}}
-@if (Session::get('power') == 1)
+@if (Session::get('power') >= 1)
 <div class="mt-4">
     <button class="btn btn-danger"
         data-bs-toggle="modal" data-bs-target="#deleteRecordModal">

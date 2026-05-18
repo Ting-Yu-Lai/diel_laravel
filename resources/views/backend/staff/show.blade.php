@@ -14,7 +14,7 @@
         <a href="{{ route('backend.staff.edit', $staff->id) }}" class="btn btn-primary">
             <i class="fa-solid fa-pen"></i> 編輯
         </a>
-        @if (Session::get('power') == 1)
+        @if (Session::get('power') >= 1)
             <button class="btn btn-danger ms-2"
                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                 data-id="{{ $staff->id }}" data-name="{{ $staff->name }}">
@@ -91,8 +91,8 @@
         </div>
     </div>
 
-    {{-- 刪除記錄（僅 power==1 可見）--}}
-    @if (Session::get('power') == 1 && $deleteLogs->isNotEmpty())
+    {{-- 刪除記錄（店長以上可見）--}}
+    @if (Session::get('power') >= 1 && $deleteLogs->isNotEmpty())
         <div class="col-12">
             <div class="card border-danger">
                 <div class="card-header fw-bold text-danger">
@@ -124,7 +124,7 @@
 
 </div>
 
-@if (Session::get('power') == 1)
+@if (Session::get('power') >= 1)
 {{-- 刪除確認 Modal --}}
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">

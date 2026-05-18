@@ -50,7 +50,7 @@
                                 工作人員管理
                             </a>
                         </li>
-                        @if (Session::get('power') == 1)
+                        @if (Session::get('power') >= 2)
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/job-title*') ? 'active' : '' }}"
                                 href="{{ route('backend.job-title.index') }}">
@@ -167,7 +167,7 @@
                     </ul>
                 </div>
             </li>
-            @if (Session::get('power') == 1)
+            @if (Session::get('power') >= 2)
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('backend/admin*') ? 'active' : '' }}"
                         href="{{ route('backend.admin.index') }}">

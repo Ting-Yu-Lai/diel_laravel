@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Admin;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +22,14 @@ class AdminAuth
             return redirect()->route('admin.loginForm');
         }
 
-        // 僅 power==1 可訪問的路由
-        $power1Only = [
+        // 僅超級管理員 (power=2) 可訪問的路由
+        $superAdminOnly = [
             'backend.admin.index',
+            'backend.admin.create',
+            'backend.admin.store',
+            'backend.admin.edit',
+            'backend.admin.update',
+            'backend.admin.destroy',
             'backend.job-title.index',
             'backend.job-title.create',
             'backend.job-title.store',
@@ -32,8 +38,8 @@ class AdminAuth
             'backend.job-title.destroy',
         ];
 
-        if (Session::get('power') != 1 && in_array($request->route()->getName(), $power1Only)) {
-            return redirect()->route('backend.index')->with('error', '你沒有權限');
+        if (Session::get('power') < Admin::ROLE_SUPER_ADMIN && in_array($request->route()->getName(), $superAdminOnly)) {
+            return redirect()->route('backend.index')->with('error', '你沒有權限，需要超級管理員身份');
         }
 
         return $next($request);

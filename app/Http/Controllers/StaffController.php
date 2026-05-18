@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\StoreStaffRequest;
 use App\Http\Requests\Admin\UpdateStaffRequest;
+use App\Models\Admin;
 use App\Models\JobTitle;
 use App\Models\Staff;
 use App\Models\StaffDeleteLog;
@@ -97,7 +98,7 @@ class StaffController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') != 1) {
+        if (Session::get('power') < Admin::ROLE_MANAGER) {
             return back()->with('error', '你沒有權限執行此操作');
         }
 

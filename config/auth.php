@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'members',
         ],
+        'api_admin' => [
+            'driver'   => 'jwt',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -77,6 +81,11 @@ return [
         'members' => [
             'driver' => 'eloquent',
             'model' => App\Models\Member::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Admin::class,
         ],
     ],
 

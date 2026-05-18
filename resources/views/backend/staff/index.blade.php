@@ -90,7 +90,7 @@
                             class="btn btn-sm btn-info">檔案</a>
                         <a href="{{ route('backend.staff.edit', $member->id) }}"
                             class="btn btn-sm btn-primary">編輯</a>
-                        @if (Session::get('power') == 1)
+                        @if (Session::get('power') >= 1)
                             <button class="btn btn-sm btn-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal"
@@ -116,7 +116,7 @@
     </table>
 </div>
 
-@if (Session::get('power') == 1)
+@if (Session::get('power') >= 1)
 {{-- 刪除確認 Modal --}}
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">

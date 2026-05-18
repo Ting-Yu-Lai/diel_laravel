@@ -19,7 +19,8 @@ class UpdateAdminRequest extends FormRequest
             'username'  => "required|string|max:50|unique:admins,username,{$id}",
             'password'  => ['nullable', 'string', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&^_\-]/'],
             'full_name' => 'nullable|string|max:100',
-            'power'     => 'required|in:0,1',
+            'email'     => 'nullable|email|max:100',
+            'power'     => 'required|in:0,1,2',
         ];
     }
 
@@ -30,6 +31,7 @@ class UpdateAdminRequest extends FormRequest
             'username.unique'   => '此帳號已被使用',
             'password.min'      => '密碼至少 8 個字元',
             'password.regex'    => '密碼須包含大寫字母、小寫字母、數字及特殊符號（@$!%*#?&^_-）',
+            'email.email'       => 'Email 格式不正確',
             'power.required'    => '請選擇權限',
             'power.in'          => '權限值無效',
         ];

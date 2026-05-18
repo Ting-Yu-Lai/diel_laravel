@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\StoreAdminRequest;
 use App\Http\Requests\Admin\UpdateAdminRequest;
+use App\Models\Admin;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -73,7 +74,7 @@ class AdminController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') != 1) {
+        if (Session::get('power') < Admin::ROLE_SUPER_ADMIN) {
             return back()->with('error', '你沒有權限執行此操作');
         }
 

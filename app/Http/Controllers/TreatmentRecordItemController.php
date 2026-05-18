@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\StoreTreatmentRecordItemRequest;
 use App\Http\Requests\Admin\UpdateTreatmentRecordItemRequest;
+use App\Models\Admin;
 use App\Models\Staff;
 use App\Models\TreatmentCategory;
 use App\Models\TreatmentRecord;
@@ -64,7 +65,7 @@ class TreatmentRecordItemController extends Controller
 
     public function destroy(Request $request, int $recordId, int $id)
     {
-        if (Session::get('power') != 1) {
+        if (Session::get('power') < Admin::ROLE_MANAGER) {
             return back()->with('error', '你沒有權限執行此操作');
         }
 

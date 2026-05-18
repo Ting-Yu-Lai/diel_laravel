@@ -118,7 +118,7 @@
                             class="btn btn-sm btn-info text-white">查看</a>
                         <a href="{{ route('backend.treatment-record.edit', $record->id) }}"
                             class="btn btn-sm btn-primary">編輯</a>
-                        @if (Session::get('power') == 1)
+                        @if (Session::get('power') >= 1)
                             <button class="btn btn-sm btn-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal"
@@ -140,7 +140,7 @@
 
 {{ $records->links() }}
 
-@if (Session::get('power') == 1)
+@if (Session::get('power') >= 1)
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
