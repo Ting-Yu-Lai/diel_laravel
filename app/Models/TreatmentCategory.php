@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasDeleteLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class TreatmentCategory extends Model
 {
+    use HasDeleteLogs;
     protected $fillable = ['name'];
 
     public function treatments()
@@ -17,4 +19,5 @@ class TreatmentCategory extends Model
     {
         return $this->hasMany(TreatmentCategoryDeleteLog::class, 'category_id');
     }
+
 }

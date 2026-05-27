@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\IsDeleteLog;
 use Illuminate\Database\Eloquent\Model;
 
 class CustomerDeleteLog extends Model
 {
-    public $timestamps = false;
+    use IsDeleteLog;
 
     protected $fillable = [
         'customer_id',
@@ -14,13 +15,4 @@ class CustomerDeleteLog extends Model
         'deleted_by_admin_id',
         'reason',
     ];
-
-    protected $casts = [
-        'created_at' => 'datetime',
-    ];
-
-    public function admin()
-    {
-        return $this->belongsTo(Admin::class, 'deleted_by_admin_id');
-    }
 }

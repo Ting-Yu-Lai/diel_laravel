@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\AuthorizesDestroy;
+use App\Http\Controllers\Concerns\RespondsWithFlash;
 use App\Http\Requests\Admin\StoreTreatmentRecordItemRequest;
 use App\Http\Requests\Admin\UpdateTreatmentRecordItemRequest;
-use App\Models\Admin;
 use App\Models\Staff;
 use App\Models\TreatmentCategory;
 use App\Models\TreatmentRecord;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class TreatmentRecordItemController extends Controller
 {
+    use AuthorizesDestroy, RespondsWithFlash;
     public function __construct(
         private readonly TreatmentRecordItemService $itemService,
     ) {}
@@ -65,15 +67,8 @@ class TreatmentRecordItemController extends Controller
 
     public function destroy(Request $request, int $recordId, int $id)
     {
-        if (Session::get('power') < Admin::ROLE_MANAGER) {
-            return back()->with('error', '你沒有權限執行此操作');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:500',
-        ], [
-            'reason.required' => '請填寫刪除原因',
-        ]);
+        if ($redirect = $this->authorizeDestroy()) return $redirect;
+        $this->validateDestroyReason($request);
 
         $item = $this->itemService->findById($id);
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\AuthorizesDestroy;
+use App\Http\Controllers\Concerns\RespondsWithFlash;
 use App\Http\Requests\Admin\StoreCustomerRequest;
 use App\Http\Requests\Admin\UpdateCustomerRequest;
-use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\CustomerDeleteLog;
 use App\Models\TagCategory;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
 {
+    use AuthorizesDestroy, RespondsWithFlash;
     public function __construct(
         private readonly CustomerService $customerService,
     ) {}
@@ -156,15 +158,8 @@ class CustomerController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') < Admin::ROLE_MANAGER) {
-            return back()->with('error', '你沒有權限執行此操作');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:500',
-        ], [
-            'reason.required' => '請填寫刪除原因',
-        ]);
+        if ($redirect = $this->authorizeDestroy()) return $redirect;
+        $this->validateDestroyReason($request);
 
         $customer = $this->customerService->findById($id);
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\AuthorizesDestroy;
+use App\Http\Controllers\Concerns\RespondsWithFlash;
 use App\Http\Requests\Admin\StoreStaffRequest;
 use App\Http\Requests\Admin\UpdateStaffRequest;
-use App\Models\Admin;
 use App\Models\JobTitle;
 use App\Models\Staff;
 use App\Models\StaffDeleteLog;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class StaffController extends Controller
 {
+    use AuthorizesDestroy, RespondsWithFlash;
     public function __construct(
         private readonly StaffService $staffService,
     ) {}
@@ -98,15 +100,8 @@ class StaffController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') < Admin::ROLE_MANAGER) {
-            return back()->with('error', '你沒有權限執行此操作');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:500',
-        ], [
-            'reason.required' => '請填寫異動原因',
-        ]);
+        if ($redirect = $this->authorizeDestroy()) return $redirect;
+        $this->validateDestroyReason($request, '異動');
 
         $staff = $this->staffService->findById($id);
 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Concerns\FormatsPhone;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Member extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, FormatsPhone;
 
     protected $fillable = [
         'password_hash',
@@ -30,17 +30,6 @@ class Member extends Authenticatable
     protected $casts = [
         'last_login_at' => 'datetime',
     ];
-
-    public function formattedPhone(): Attribute
-    {
-        return Attribute::get(function () {
-            $p = $this->phone;
-            if ($p && strlen($p) === 10) {
-                return substr($p, 0, 4) . '-' . substr($p, 4, 3) . '-' . substr($p, 7, 3);
-            }
-            return $p;
-        });
-    }
 
     public function getAuthPassword()
     {
