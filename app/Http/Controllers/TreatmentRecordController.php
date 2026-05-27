@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\AuthorizesDestroy;
+use App\Http\Controllers\Concerns\RespondsWithFlash;
 use App\Http\Requests\Admin\StoreTreatmentRecordRequest;
 use App\Http\Requests\Admin\UpdateTreatmentRecordRequest;
-use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Staff;
 use App\Models\TreatmentRecordDeleteLog;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class TreatmentRecordController extends Controller
 {
+    use AuthorizesDestroy, RespondsWithFlash;
     public function __construct(
         private readonly TreatmentRecordService $service,
     ) {}
@@ -88,15 +90,8 @@ class TreatmentRecordController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') < Admin::ROLE_MANAGER) {
-            return back()->with('error', '你沒有權限執行此操作');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:500',
-        ], [
-            'reason.required' => '請填寫刪除原因',
-        ]);
+        if ($redirect = $this->authorizeDestroy()) return $redirect;
+        $this->validateDestroyReason($request);
 
         $record = $this->service->findById($id);
 

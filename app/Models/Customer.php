@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FormatsPhone;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, FormatsPhone;
 
     protected $table = 'customers';
     public $timestamps = true;
@@ -39,22 +40,9 @@ class Customer extends Model
         'is_active'  => 'boolean',
     ];
 
-    public function formattedPhone(): Attribute
-    {
-        return Attribute::get(fn() => self::fmtPhone($this->phone));
-    }
-
     public function formattedEmergencyPhone(): Attribute
     {
-        return Attribute::get(fn() => self::fmtPhone($this->emergency_phone));
-    }
-
-    private static function fmtPhone(?string $p): ?string
-    {
-        if ($p && strlen($p) === 10) {
-            return substr($p, 0, 4) . '-' . substr($p, 4, 3) . '-' . substr($p, 7, 3);
-        }
-        return $p;
+        return Attribute::get(fn() => static::fmtPhone($this->emergency_phone));
     }
 
     public function member(): BelongsTo

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\IsDeleteLog;
 use Illuminate\Database\Eloquent\Model;
 
 class TreatmentRecordDeleteLog extends Model
 {
-    public $timestamps = false;
+    use IsDeleteLog;
 
     protected $fillable = [
         'treatment_record_id',
@@ -18,6 +19,5 @@ class TreatmentRecordDeleteLog extends Model
 
     protected $casts = [
         'record_date' => 'date',
-        'created_at'  => 'datetime',
     ];
 }

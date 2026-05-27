@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasDeleteLogs;
 use Illuminate\Database\Eloquent\Model;
 
 class TreatmentRecord extends Model
 {
+    use HasDeleteLogs;
     protected $fillable = [
         'customer_id',
         'record_date',
@@ -61,8 +63,4 @@ class TreatmentRecord extends Model
             ->wherePivot('role', 'consultant');
     }
 
-    public function deleteLogs()
-    {
-        return $this->hasMany(TreatmentRecordDeleteLog::class);
-    }
 }

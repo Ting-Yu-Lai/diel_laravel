@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasDeleteLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Staff extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasDeleteLogs;
 
     protected $fillable = [
         'job_title_id',
@@ -31,8 +32,4 @@ class Staff extends Model
         return $this->belongsTo(JobTitle::class);
     }
 
-    public function deleteLogs()
-    {
-        return $this->hasMany(StaffDeleteLog::class);
-    }
 }

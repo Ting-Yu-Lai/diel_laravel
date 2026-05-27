@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\AuthorizesDestroy;
+use App\Http\Controllers\Concerns\RespondsWithFlash;
 use App\Http\Requests\Admin\StoreTreatmentCategoryRequest;
 use App\Http\Requests\Admin\UpdateTreatmentCategoryRequest;
-use App\Models\Admin;
 use App\Models\TreatmentCategoryDeleteLog;
 use App\Services\TreatmentCategoryService;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 
 class TreatmentCategoryController extends Controller
 {
+    use AuthorizesDestroy, RespondsWithFlash;
     public function __construct(
         private readonly TreatmentCategoryService $treatmentCategoryService,
     ) {}
@@ -49,15 +51,8 @@ class TreatmentCategoryController extends Controller
 
     public function destroy(Request $request, int $id)
     {
-        if (Session::get('power') < Admin::ROLE_MANAGER) {
-            return back()->with('error', '你沒有權限執行此操作');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:500',
-        ], [
-            'reason.required' => '請填寫刪除原因',
-        ]);
+        if ($redirect = $this->authorizeDestroy()) return $redirect;
+        $this->validateDestroyReason($request);
 
         $category = $this->treatmentCategoryService->findById($id);
 
