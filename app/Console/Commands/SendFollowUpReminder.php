@@ -9,11 +9,11 @@ use Illuminate\Console\Command;
 class SendFollowUpReminder extends Command
 {
     protected $signature = 'line:remind
-                            {--day=3  : 模擬天數（3、6、7）}
+                            {--day=1  : 模擬天數（1、3、6、7）}
                             {--id=    : 指定 follow_up id（不填則對所有已綁定 LINE 的追蹤發送）}
                             {--list   : 列出所有已綁定 LINE 的追蹤，不發送}';
 
-    protected $description = 'Demo 用：強制模擬指定天數的術後追蹤 LINE 提醒';
+    protected $description = 'Demo 用：強制模擬指定天數的術後追蹤 LINE 提醒（1、3、6、7）';
 
     public function __construct(
         private readonly LineReminderService $lineReminderService,
@@ -50,8 +50,8 @@ class SendFollowUpReminder extends Command
         $day = (int) $this->option('day');
         $id  = $this->option('id');
 
-        if (! in_array($day, [3, 6, 7], true)) {
-            $this->error('--day 只接受 3、6、7');
+        if (! in_array($day, [1, 3, 6, 7], true)) {
+            $this->error('--day 只接受 1、3、6、7');
             return Command::FAILURE;
         }
 
