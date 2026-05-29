@@ -271,13 +271,15 @@ class ReportRepository
                     SELECT GROUP_CONCAT(DISTINCT s.name ORDER BY s.name SEPARATOR ', ')
                     FROM treatment_record_staff trs
                     JOIN staff s ON trs.staff_id = s.id
-                    WHERE trs.treatment_record_id = tr.id AND trs.role = 'doctor'
+                    JOIN job_titles jt ON trs.job_title_id = jt.id
+                    WHERE trs.treatment_record_id = tr.id AND jt.treatment_role = 'doctor'
                 ) as doctors,
                 (
                     SELECT GROUP_CONCAT(DISTINCT s.name ORDER BY s.name SEPARATOR ', ')
                     FROM treatment_record_staff trs
                     JOIN staff s ON trs.staff_id = s.id
-                    WHERE trs.treatment_record_id = tr.id AND trs.role = 'consultant'
+                    JOIN job_titles jt ON trs.job_title_id = jt.id
+                    WHERE trs.treatment_record_id = tr.id AND jt.treatment_role = 'consultant'
                 ) as consultants
             ")
             ->orderBy('tr.record_date')

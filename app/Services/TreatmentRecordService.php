@@ -67,17 +67,35 @@ class TreatmentRecordService
     {
         $record->staff()->detach();
 
-        // 醫師、護理師：多選（陣列）
-        foreach (['doctor' => 'doctor_ids', 'nurse' => 'nurse_ids'] as $role => $key) {
-            foreach ($staffByRole[$key] ?? [] as $staffId) {
-                $record->staff()->attach((int) $staffId, ['role' => $role]);
-            }
+        $doctorIds    = array_map('intval', $staffByRole['doctor_ids'] ?? []);
+        $nurseIds     = array_map('intval', $staffByRole['nurse_ids'] ?? []);
+        $consultantId = !empty($staffByRole['consultant_id']) ? (int) $staffByRole['consultant_id'] : null;
+
+        $allStaffIds = array_values(array_unique(array_filter([
+            ...$doctorIds,
+            ...$nurseIds,
+            ...($consultantId ? [$consultantId] : []),
+        ])));
+
+        if (empty($allStaffIds)) {
+            return;
         }
 
-        // 諮詢師：單選（單一 ID）
-        if (!empty($staffByRole['consultant_id'])) {
-            $record->staff()->attach((int) $staffByRole['consultant_id'], ['role' => 'consultant']);
+        // 批次載入 job_title_id，避免 N+1
+        $staffJobTitleMap = \App\Models\Staff::whereIn('id', $allStaffIds)
+            ->pluck('job_title_id', 'id');
+
+        $syncData = [];
+        foreach ([...$doctorIds, ...$nurseIds] as $staffId) {
+            if ($jobTitleId = $staffJobTitleMap[$staffId] ?? null) {
+                $syncData[$staffId] = ['job_title_id' => $jobTitleId];
+            }
         }
+        if ($consultantId && ($jobTitleId = $staffJobTitleMap[$consultantId] ?? null)) {
+            $syncData[$consultantId] = ['job_title_id' => $jobTitleId];
+        }
+
+        $record->staff()->attach($syncData);
     }
 
     private function appendAutoFields(array $data, ?int $excludeId = null): array

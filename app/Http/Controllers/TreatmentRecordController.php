@@ -111,7 +111,7 @@ class TreatmentRecordController extends Controller
 
     private function loadConsultants()
     {
-        return Staff::whereHas('jobTitle', fn($q) => $q->where('name', 'like', '%諮詢師%'))
+        return Staff::whereHas('jobTitle', fn($q) => $q->where('treatment_role', 'consultant'))
             ->where('is_active', true)
             ->orderBy('name')
             ->get();

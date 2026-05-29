@@ -13,10 +13,10 @@ class DemoSeeder extends Seeder
     {
         // ── 1. 職稱 ─────────────────────────────────────
         $this->insertAll('job_titles', [
-            ['name' => '院長醫師'],
-            ['name' => '主治醫師'],
-            ['name' => '護理師'],
-            ['name' => '醫美顧問'],
+            ['name' => '院長醫師', 'treatment_role' => 'doctor'],
+            ['name' => '主治醫師', 'treatment_role' => 'doctor'],
+            ['name' => '護理師',   'treatment_role' => 'nurse'],
+            ['name' => '醫美顧問', 'treatment_role' => 'consultant'],
         ]);
         $jt = DB::table('job_titles')->pluck('id', 'name');
 
@@ -28,6 +28,7 @@ class DemoSeeder extends Seeder
             ['job_title_id' => $jt['醫美顧問'], 'name' => '張雅琪', 'gender' => 'F', 'phone' => '0912001004', 'email' => 'zhang@diel.com', 'hire_date' => '2023-01-10', 'is_active' => true],
         ]);
         $staff = DB::table('staff')->pluck('id', 'name');
+        $staffJobTitles = DB::table('staff')->pluck('job_title_id', 'id');
 
         // ── 3. 標籤分類 + 標籤 ──────────────────────────
         $this->insertAll('tag_categories', [
@@ -121,6 +122,7 @@ class DemoSeeder extends Seeder
             isNew: false, isReturn: true,
             notes: '客戶反映希望改善毛孔粗大與色斑，使用皮秒雷射全臉治療。',
             doctorId: $staff['陳雅婷'],
+            doctorJobTitleId: $staffJobTitles[$staff['陳雅婷']],
             item: ['treatment_id' => $treat['皮秒雷射'], 'body_part' => '全臉', 'dose' => '全臉一個療程', 'price' => 12000, 'cost' => 4000, 'staff_id' => $staff['陳雅婷']],
             followUp: [
                 'status' => 'ongoing',
@@ -141,6 +143,7 @@ class DemoSeeder extends Seeder
             isNew: false, isReturn: true,
             notes: '法令紋填充，使用瑞典廠牌玻尿酸 1cc，效果自然。',
             doctorId: $staff['林建宏'],
+            doctorJobTitleId: $staffJobTitles[$staff['林建宏']],
             item: ['treatment_id' => $treat['玻尿酸填充'], 'body_part' => '法令紋', 'dose' => '1cc', 'price' => 18000, 'cost' => 6000, 'staff_id' => $staff['林建宏']],
             followUp: [
                 'status' => 'completed',
@@ -161,6 +164,7 @@ class DemoSeeder extends Seeder
             isNew: true, isReturn: false,
             notes: '新客戶，主訴額頭紋路深，施打肉毒 20U。術後提醒 4 小時內勿低頭。',
             doctorId: $staff['林建宏'],
+            doctorJobTitleId: $staffJobTitles[$staff['林建宏']],
             item: ['treatment_id' => $treat['肉毒桿菌注射'], 'body_part' => '額頭', 'dose' => '20U', 'price' => 8000, 'cost' => 2500, 'staff_id' => $staff['林建宏']],
             followUp: [
                 'status' => 'ongoing',
@@ -189,7 +193,7 @@ class DemoSeeder extends Seeder
             'created_at'     => $date4,
             'updated_at'     => $date4,
         ]);
-        DB::table('treatment_record_staff')->insert(['treatment_record_id' => $rec4, 'staff_id' => $staff['陳雅婷'], 'role' => 'doctor']);
+        DB::table('treatment_record_staff')->insert(['treatment_record_id' => $rec4, 'staff_id' => $staff['陳雅婷'], 'job_title_id' => $staffJobTitles[$staff['陳雅婷']]]);
         DB::table('treatment_record_items')->insert([
             ['treatment_record_id' => $rec4, 'treatment_id' => $treat['光子嫩膚'],   'body_part' => '全臉', 'dose' => null, 'price' => 4500, 'cost' => 1200, 'staff_id' => $staff['陳雅婷'], 'notes' => null, 'created_at' => $date4, 'updated_at' => $date4],
             ['treatment_record_id' => $rec4, 'treatment_id' => $treat['杏仁酸煥膚'], 'body_part' => '全臉', 'dose' => null, 'price' => 1500, 'cost' =>  600, 'staff_id' => $staff['王思穎'], 'notes' => null, 'created_at' => $date4, 'updated_at' => $date4],
@@ -203,6 +207,7 @@ class DemoSeeder extends Seeder
             isNew: false, isReturn: false,
             notes: '全臉 HIFU 超音波拉提，共 600 發，療程順利。',
             doctorId: $staff['林建宏'],
+            doctorJobTitleId: $staffJobTitles[$staff['林建宏']],
             item: ['treatment_id' => $treat['HIFU超音波拉提'], 'body_part' => '全臉', 'dose' => '600發', 'price' => 25000, 'cost' => 8000, 'staff_id' => $staff['林建宏']],
             followUp: [
                 'status' => 'completed',
@@ -231,7 +236,7 @@ class DemoSeeder extends Seeder
             'created_at'     => $date6,
             'updated_at'     => $date6,
         ]);
-        DB::table('treatment_record_staff')->insert(['treatment_record_id' => $rec6, 'staff_id' => $staff['林建宏'], 'role' => 'doctor']);
+        DB::table('treatment_record_staff')->insert(['treatment_record_id' => $rec6, 'staff_id' => $staff['林建宏'], 'job_title_id' => $staffJobTitles[$staff['林建宏']]]);
         DB::table('treatment_record_items')->insert([
             ['treatment_record_id' => $rec6, 'treatment_id' => $treat['肉毒桿菌注射'], 'body_part' => '眼周', 'dose' => '15U', 'price' => 8000,  'cost' => 2500,  'staff_id' => $staff['林建宏'], 'notes' => null, 'created_at' => $date6, 'updated_at' => $date6],
             ['treatment_record_id' => $rec6, 'treatment_id' => $treat['童顏針'],       'body_part' => '全臉', 'dose' => '1瓶', 'price' => 30000, 'cost' => 10500, 'staff_id' => $staff['林建宏'], 'notes' => null, 'created_at' => $date6, 'updated_at' => $date6],
@@ -245,6 +250,7 @@ class DemoSeeder extends Seeder
         bool $isNew, bool $isReturn,
         ?string $notes,
         int $doctorId,
+        int $doctorJobTitleId,
         array $item,
         array $followUp,
     ): void {
@@ -268,7 +274,7 @@ class DemoSeeder extends Seeder
         DB::table('treatment_record_staff')->insert([
             'treatment_record_id' => $recId,
             'staff_id'            => $doctorId,
-            'role'                => 'doctor',
+            'job_title_id'        => $doctorJobTitleId,
         ]);
 
         $itemId = DB::table('treatment_record_items')->insertGetId([

@@ -20,24 +20,19 @@ class StaffController extends Controller
         private readonly StaffService $staffService,
     ) {}
 
-    /** 依角色（doctor / nurse）搜尋工作人員，供療程記錄表單 AJAX 使用 */
+    /** 依角色（doctor / nurse / consultant）搜尋工作人員，供療程記錄表單 AJAX 使用 */
     public function searchJson(Request $request)
     {
         $role    = $request->get('role', '');
         $keyword = trim($request->get('q', ''));
 
-        $roleTitleMap = [
-            'doctor' => '醫師',
-            'nurse'  => '護理師',
-        ];
+        $validRoles = ['doctor', 'nurse', 'consultant'];
 
-        if (!array_key_exists($role, $roleTitleMap)) {
+        if (!in_array($role, $validRoles, strict: true)) {
             return response()->json([]);
         }
 
-        $titleKeyword = $roleTitleMap[$role];
-
-        $staffList = Staff::whereHas('jobTitle', fn($q) => $q->where('name', 'like', "%{$titleKeyword}%"))
+        $staffList = Staff::whereHas('jobTitle', fn($q) => $q->where('treatment_role', $role))
             ->where('is_active', true)
             ->when($keyword !== '', fn($q) => $q->where('name', 'like', "%{$keyword}%"))
             ->orderBy('name')

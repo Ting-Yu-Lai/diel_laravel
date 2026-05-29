@@ -108,7 +108,8 @@ class DashboardRepository
         return DB::table('treatment_record_staff as trs')
             ->join('staff as s', 'trs.staff_id', '=', 's.id')
             ->join('treatment_records as tr', 'trs.treatment_record_id', '=', 'tr.id')
-            ->where('trs.role', 'consultant')
+            ->join('job_titles as jt', 'trs.job_title_id', '=', 'jt.id')
+            ->where('jt.treatment_role', 'consultant')
             ->selectRaw('
                 s.name,
                 COUNT(DISTINCT trs.treatment_record_id) as record_count,
