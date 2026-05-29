@@ -18,6 +18,16 @@
         <input type="text" name="name" class="form-control"
             value="{{ old('name', $jobTitle->name) }}" required maxlength="50" autofocus>
     </div>
+    <div class="mb-3">
+        <label class="form-label">療程角色</label>
+        <select name="treatment_role" class="form-select">
+            <option value="">— 無療程角色（不參與療程指派）—</option>
+            <option value="doctor"     {{ old('treatment_role', $jobTitle->treatment_role) === 'doctor'     ? 'selected' : '' }}>醫師（doctor）</option>
+            <option value="nurse"      {{ old('treatment_role', $jobTitle->treatment_role) === 'nurse'      ? 'selected' : '' }}>護理師（nurse）</option>
+            <option value="consultant" {{ old('treatment_role', $jobTitle->treatment_role) === 'consultant' ? 'selected' : '' }}>諮詢師（consultant）</option>
+        </select>
+        <div class="form-text text-muted">設定後，此職稱員工可在療程紀錄中被指派為對應角色</div>
+    </div>
     <button type="submit" class="btn btn-success">
         <i class="fa-solid fa-floppy-disk"></i> 儲存變更
     </button>
