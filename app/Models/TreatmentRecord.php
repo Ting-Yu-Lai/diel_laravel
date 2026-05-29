@@ -42,25 +42,28 @@ class TreatmentRecord extends Model
     public function staff()
     {
         return $this->belongsToMany(Staff::class, 'treatment_record_staff')
-            ->withPivot('role');
+            ->withPivot('job_title_id');
     }
 
     public function doctors()
     {
         return $this->belongsToMany(Staff::class, 'treatment_record_staff')
-            ->wherePivot('role', 'doctor');
+            ->whereHas('jobTitle', fn($q) => $q->where('treatment_role', 'doctor'))
+            ->withPivot('job_title_id');
     }
 
     public function nurses()
     {
         return $this->belongsToMany(Staff::class, 'treatment_record_staff')
-            ->wherePivot('role', 'nurse');
+            ->whereHas('jobTitle', fn($q) => $q->where('treatment_role', 'nurse'))
+            ->withPivot('job_title_id');
     }
 
     public function consultants()
     {
         return $this->belongsToMany(Staff::class, 'treatment_record_staff')
-            ->wherePivot('role', 'consultant');
+            ->whereHas('jobTitle', fn($q) => $q->where('treatment_role', 'consultant'))
+            ->withPivot('job_title_id');
     }
 
 }

@@ -14,16 +14,18 @@ class StoreJobTitleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:50|unique:job_titles,name',
+            'name'           => 'required|string|max:50|unique:job_titles,name',
+            'treatment_role' => 'nullable|in:doctor,nurse,consultant',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => '職稱名稱為必填',
-            'name.unique'   => '此職稱已存在',
-            'name.max'      => '職稱名稱最多 50 字',
+            'name.required'          => '職稱名稱為必填',
+            'name.unique'            => '此職稱已存在',
+            'name.max'               => '職稱名稱最多 50 字',
+            'treatment_role.in'      => '療程角色必須為 doctor、nurse 或 consultant',
         ];
     }
 }

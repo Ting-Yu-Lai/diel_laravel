@@ -19,7 +19,7 @@ class AdminSeeder extends Seeder
             'username' => 'admin',
             'password_hash' => Hash::make('1234'),
             'full_name' => '超級管理員',
-            'power' => 1,
+            'power' => Admin::ROLE_SUPER_ADMIN,
             // 'email' => 'admin@example.com'
         ]);
     }
