@@ -20,10 +20,16 @@ return new class extends Migration
 
         // 2. 資料遷移：從 staff 的當前 job_title_id 填入 pivot
         DB::statement("
-            UPDATE treatment_record_staff trs
-            INNER JOIN staff s ON s.id = trs.staff_id
-            SET trs.job_title_id = s.job_title_id
-            WHERE s.job_title_id IS NOT NULL
+            UPDATE treatment_record_staff
+            SET job_title_id = (
+                SELECT job_title_id FROM staff
+                WHERE staff.id = treatment_record_staff.staff_id
+            )
+            WHERE EXISTS (
+                SELECT 1 FROM staff
+                WHERE staff.id = treatment_record_staff.staff_id
+                AND staff.job_title_id IS NOT NULL
+            )
         ");
 
         // 3. 設為 NOT NULL
@@ -54,10 +60,16 @@ return new class extends Migration
         });
 
         DB::statement("
-            UPDATE treatment_record_staff trs
-            INNER JOIN job_titles jt ON jt.id = trs.job_title_id
-            SET trs.role = jt.treatment_role
-            WHERE jt.treatment_role IS NOT NULL
+            UPDATE treatment_record_staff
+            SET role = (
+                SELECT treatment_role FROM job_titles
+                WHERE job_titles.id = treatment_record_staff.job_title_id
+            )
+            WHERE EXISTS (
+                SELECT 1 FROM job_titles
+                WHERE job_titles.id = treatment_record_staff.job_title_id
+                AND job_titles.treatment_role IS NOT NULL
+            )
         ");
 
         Schema::table('treatment_record_staff', function (Blueprint $table) {
